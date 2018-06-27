@@ -18,34 +18,7 @@
 
 class Gzip {
 public:
-	static std::string compress(const std::string& data)
-	{
-		namespace bio = boost::iostreams;
-
-		std::stringstream compressed;
-		std::stringstream origin(data);
-
-		bio::filtering_streambuf<bio::input> out;
-		out.push(bio::gzip_compressor(bio::gzip_params(bio::gzip::best_compression)));
-		out.push(origin);
-		bio::copy(out, compressed);
-
-		return compressed.str();
-	}
-
-	std::string decompress(std::string& inputData)	{
-		std::stringstream compressed;
-		std::stringstream decompressed;
-		
-		compressed << hex2bin(inputData);
-		
-		boost::iostreams::filtering_istream in;
-        in.push(boost::iostreams::gzip_decompressor());
-        in.push(compressed);
-		boost::iostreams::copy(in, decompressed);
-
-		return decompressed.str();
-	}
+	
 };
 
 #endif // __GZIP_H__

@@ -1,8 +1,11 @@
+// std libs
 #include <string>
 #include <vector>
-
+// custom libs
 #include <kernel.h>
 #include <scene.h>
+#include <yamada.h>
+#include <utility.h>
 
 int main(int argc, char **argv) {
 	// TODO: Get psximager integrated.
@@ -16,10 +19,12 @@ int main(int argc, char **argv) {
 	Kernel kernel("!imgs-unpacked\\NTSC\\DISC1\\INIT\\KERNEL.BIN");
 	
 	// TODO: yamada class
-	// Yamada yamada("!imgs-unpacked\\NTSC\\DISC1\\INIT\\YAMADA.BIN");
+	Yamada yamada("!imgs-unpacked\\NTSC\\DISC1\\INIT\\YAMADA.BIN");
 
 	// TODO: scene class
 	Scene scene("!imgs-unpacked\\NTSC\\DISC1\\BATTLE\\SCENE.BIN");
+	
+	std::cout << "Al Bhed Swapped \"d\": " + albhedSwap("45") << std::endl;
 	
 
 // test of file splitter, needs a bit more work, i think
