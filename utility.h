@@ -13,219 +13,141 @@
 #include <vector>
 #include <stdlib.h>
 #include <cassert>
-// custom libs
-#include <gzip.h>
+// boost libs
+#include <boost/iostreams/filter/zlib.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filtering_streambuf.hpp>
+#include <boost/iostreams/copy.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
+
+
+struct DataFile {
+	int cmpSize;
+	int rawSize;
+	int index;
+	std::string content;
+};
 
 /*
  * Conversion handlers
  */
+namespace convert {
+	std::string hex2bin(std::string const& s) {
+		assert(s.length() % 2 == 0);
 
-std::string hex2bin(std::string const& s) {
-    assert(s.length() % 2 == 0);
+		std::string sOut;
+		sOut.reserve(s.length()/2);
 
-    std::string sOut;
-    sOut.reserve(s.length()/2);
-
-    std::string extract;
-    for (std::string::const_iterator pos = s.begin(); pos<s.end(); pos += 2) {
-        extract.assign(pos, pos+2);
-        sOut.push_back(std::stoi(extract, nullptr, 16));
-    }
-    return sOut;
-}
-
-std::string bin2hex(std::string& bytes) {
-	std::stringstream bin(bytes);
-	unsigned char x;
-	std::stringstream hex;
-
-	// convert file's binary to hex and fix up the data
-	while (bin >> std::noskipws >> x) {
-		hex << std::setfill('0') << std::setw(2) << std::hex << static_cast<unsigned int>(x);
+		std::string extract;
+		for (std::string::const_iterator pos = s.begin(); pos<s.end(); pos += 2) {
+			extract.assign(pos, pos+2);
+			sOut.push_back(std::stoi(extract, nullptr, 16));
+		}
+		return sOut;
 	}
-	
-	return hex.str();
-}
 
+	std::string bin2hex(std::string& bytes) {
+		std::stringstream bin(bytes);
+		unsigned char x;
+		std::stringstream hex;
 
-std::string BytesToHexFS(std::ifstream& bytes) {
-	unsigned char x;
-	std::stringstream hex;
-
-	// convert file's binary to hex and fix up the data
-	while (bytes >> std::noskipws >> x) {
-		hex << std::setfill('0') << std::setw(2) << std::hex << static_cast<unsigned int>(x);
+		// convert file's binary to hex and fix up the data
+		while (bin >> std::noskipws >> x) {
+			hex << std::setfill('0') << std::setw(2) << std::hex << static_cast<unsigned int>(x);
+		}
+		
+		return hex.str();
 	}
-	
-	return hex.str();
-}
 
-// swap endian-ness of a hex string
-std::string endianSwapS(std::string& input) {
-	std::string output;
-	std::string temp;
-	
-	for(unsigned int i = 0; i < (input.length() / 2); i++) {
-		output.insert(0, input.substr(i*2, 2));
+
+	std::string BytesToHexFS(std::ifstream& bytes) {
+		unsigned char x;
+		std::stringstream hex;
+
+		// convert file's binary to hex and fix up the data
+		while (bytes >> std::noskipws >> x) {
+			hex << std::setfill('0') << std::setw(2) << std::hex << static_cast<unsigned int>(x);
+		}
+		
+		return hex.str();
 	}
-	
-	return output;
-}
 
+	// swap endian-ness of a hex string
+	std::string endianSwapS(std::string& input) {
+		std::string output;
+		std::string temp;
+		
+		for(unsigned int i = 0; i < (input.length() / 2); i++) {
+			output.insert(0, input.substr(i*2, 2));
+		}
+		
+		return output;
+	}
+}
 
 /*
  * Compression handlers
  */
-std::string gzipCompress(const std::string& data) {
-	namespace bio = boost::iostreams;
+namespace gzip {
+	std::string compress(const std::string& data) {
+		namespace bio = boost::iostreams;
 
-	std::stringstream compressed;
-	std::stringstream origin(data);
+		std::stringstream compressed;
+		std::stringstream origin(data);
 
-	bio::filtering_streambuf<bio::input> out;
-	out.push(bio::gzip_compressor(bio::gzip_params(bio::gzip::best_compression)));
-	out.push(origin);
-	bio::copy(out, compressed);
+		bio::filtering_streambuf<bio::input> out;
+		out.push(bio::gzip_compressor(bio::gzip_params(bio::gzip::best_compression)));
+		out.push(origin);
+		bio::copy(out, compressed);
 
-	return compressed.str();
-}
+		return compressed.str();
+	}
 
-std::string gzipDecompress(std::string& inputData)	{
-	std::stringstream compressed;
-	std::stringstream decompressed;
-	
-	compressed << hex2bin(inputData);
-	
-	boost::iostreams::filtering_istream in;
-	in.push(boost::iostreams::gzip_decompressor());
-	in.push(compressed);
-	boost::iostreams::copy(in, decompressed);
+	std::string decompress(std::string& inputData)	{
+		std::stringstream compressed;
+		std::stringstream decompressed;
+		
+		compressed << convert::hex2bin(inputData);
+		
+		boost::iostreams::filtering_istream in;
+		in.push(boost::iostreams::gzip_decompressor());
+		in.push(compressed);
+		boost::iostreams::copy(in, decompressed);
 
-	return decompressed.str();
+		return decompressed.str();
+	}
 }
 
 /*
  * File handlers
  */
+namespace fhandler {
+	// splits files into vectors and ungzips the resulting strings
 
-std::vector<std::string> fileSplitter(std::string& fileData, std::vector<unsigned int>& dataSizes, unsigned short rowSize = 0) {
-	std::vector<std::string> fileRows;
-	// splitting happens here
-	for(unsigned short i = 0; i < (fileData.length() / rowSize); i++) {
-		fileRows.push_back(fileData.substr(i*rowSize, rowSize));
-	}
-	
-	for(unsigned short i = 0; i < fileRows.size(); i++) {
-		std::cout << fileRows[i] << std::endl;
-	}
-	
-	return fileRows;
-}
-
-std::vector<std::vector<std::string> > prepareFile() {
-	std::vector<std::vector<std::string> > outputData;
-	return outputData;
-}
-
-std::vector<std::string> split2DataMems(std::string& inputData, std::vector<int> dataPoints) {
-	std::vector<std::string> outputData;
-	
-	for(unsigned int i = 0; i < inputData.size(); i+=dataPoints[i]*2) {
-		outputData.push_back(inputData.substr(i, dataPoints[i]*2) );
-	}
-	
-	return outputData;
-}
-
-std::vector<std::vector<std::string> > split2WorkingData(std::string inputData, unsigned int rowSize, std::vector<int> dataPoints) {
-	std::vector<std::vector<std::string> > outputData;
-	std::vector<std::string> tempValue;
-	std::string targetRow;
-
-	for(unsigned int i = 0; i < inputData.size(); i+=rowSize) {
-		targetRow = inputData.substr(i, rowSize);
-		tempValue = split2DataMems(targetRow, dataPoints);
-		outputData.push_back(tempValue);
-	}
-	
-	return outputData;
-}
-
-std::string ungzipString(std::string target) {
-	std::string outputString;
-	outputString = gzipDecompress(target);
-	
-	return outputString;
-
-} // end Kernel::ungzip()
-
-// splits the kernel files into vectors and ungzips the result
-std::vector<std::string> separateData(std::string& str_inputData) {
-	std::vector<std::string> outputData;
-	unsigned short cmpSize = 0;
-	unsigned short position = 0;
-	std::string tempStr;
-
-	while(position < str_inputData.length()) {
-		tempStr = str_inputData.substr(position, 4);
-		tempStr = endianSwapS(tempStr);
-		cmpSize = stoi(tempStr, nullptr, 16) *2;
-		position = position + 12;
+	std::vector<std::string> processFFText(std::string& inputData) {
+		std::vector<std::string> outputData;
+		std::string tempStorage;
+		std::string dataWindow;
 		
-		tempStr = str_inputData.substr(position, cmpSize);
-		position = position + cmpSize;
-		
-		// needed for the 2 byte eof footer
-		if(position == str_inputData.length() - 4) {
-			position += 4;
+		for(unsigned int i = 0; i < inputData.size(); i+=2) {
+			dataWindow = inputData.substr(i,2);
+			if(inputData.substr(i,2) == "ff") {
+				if(inputData.substr(i,4) == "ffff") {
+					dataWindow = inputData.substr(i,4);
+					tempStorage.append(dataWindow);
+					i+=2;
+				} else {
+					//std::cout << tempStorage << "\n";
+					tempStorage.append(dataWindow);
+					outputData.push_back(tempStorage);
+					tempStorage.clear();
+				}
+			} else {
+				tempStorage.append(dataWindow);
+			}
 		}
-		
-		outputData.push_back(tempStr.c_str());
+		return outputData;
 	}
-
-	return outputData;
-} // end Kernel::separate()
-
-std::vector<std::string> unpackFile(std::string& str_inputData) {
-	std::vector<std::string> outputData;
-	std::vector<std::string> data_files = separateData(str_inputData);
-
-	// std::cout << data_files[0] << std::endl;
-	
-	std::string tempString;
-	
-	for(unsigned short i; i < data_files.size(); i++) {
-		tempString = ungzipString(data_files[i]);
-		outputData.push_back(bin2hex(tempString) );
-		
-		// dump data
-		// std::cout << tempString << std::endl;
-		// OR
-		// std::cout << outputData[i] << std::endl;
-	}
-	// dump specific file
-	// std::cout << outputData[0] << std::endl;
-	return outputData;
-} // end Kernel::unpack()
-
-std::vector<std::string> processFFText(std::string& inputData) {
-	std::vector<std::string> outputData;
-	std::string tempStorage;
-	std::string dataWindow;
-
-	for(unsigned int i = 0; i < inputData.size(); i+=2) {
-		dataWindow = inputData.substr(i,2);
-		if(inputData.substr(i,2) != "ff") {
-			tempStorage.append(dataWindow);
-		}
-		else {
-			tempStorage.append(dataWindow);
-			outputData.push_back(tempStorage);
-			tempStorage.clear();
-		}
-	}
-
-	return outputData;
 }
 
 // Al Bhed text mode encoder
