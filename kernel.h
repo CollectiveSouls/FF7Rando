@@ -108,7 +108,7 @@ std::vector<DataFile> Kernel::separateData(std::string& str_inputData) {
 		if(position == str_inputData.length() - 4) {
 			position += 4;
 		}
-		arr_outputData.push_back({cmpSize, rawSize, index, content});
+		arr_outputData.push_back({cmpSize, rawSize, index, {content}});
 	}
 
 	return arr_outputData;
@@ -141,12 +141,26 @@ void Kernel::randomizeItems(std::string& str_originData) {
 	
 	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
 	
+	std::cout << tempContainer.size() << " items included" << std::endl;
+	
 	for(unsigned short i = 0; i < tempContainer.size(); i++) {
 		str_outputData.append(tempContainer[i]);
 	}
 	
 	arr_randoDataFile[4].content = str_outputData;
 	std::cout << "\tKernel::Items randomized successfully!" << std::endl;
+		
+	//std::cout << arr_unpackedData[11].content << std::endl;
+	tempContainer = fhandler::processFFText(arr_unpackedData[11].content);
+	std::cout << tempContainer.size() << " items descriptions included" << std::endl;
+
+	for(int i = 0; i < tempContainer.size(); i++) {
+		std::cout << tempContainer[i] << std::endl;
+	}
+
+	tempContainer = fhandler::processFFText(arr_unpackedData[19].content);
+	std::cout << tempContainer.size() << " items names included" << std::endl;
+
 }
 
 void Kernel::randomizeWeapons(std::string& str_originData) {
@@ -160,6 +174,8 @@ void Kernel::randomizeWeapons(std::string& str_originData) {
 		position += ROW_SIZE;
 	}
 	
+	std::cout << tempContainer.size() << " weapons included" << std::endl;
+	
 	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
 	
 	for(unsigned short i = 0; i < tempContainer.size(); i++) {
@@ -168,6 +184,13 @@ void Kernel::randomizeWeapons(std::string& str_originData) {
 	
 	arr_randoDataFile[5].content = str_outputData;
 	std::cout << "\tKernel::Weapons randomized successfully!" << std::endl;
+	
+	//std::cout << arr_unpackedData[11].content << std::endl;
+	tempContainer = fhandler::processFFText(arr_unpackedData[12].content);
+	std::cout << tempContainer.size() << " weapon descriptions included" << std::endl;
+
+	tempContainer = fhandler::processFFText(arr_unpackedData[20].content);
+	std::cout << tempContainer.size() << " weapon names included" << std::endl;
 }
 
 void Kernel::randomizeArmors(std::string& str_originData) {

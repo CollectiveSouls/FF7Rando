@@ -13,6 +13,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <cassert>
+#include <bitset>
 // boost libs
 #include <boost/iostreams/filter/zlib.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
@@ -20,6 +21,11 @@
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 
+struct ItemData {
+	std::string content;
+	std::string name;
+	std::string desc;
+};
 
 struct DataFile {
 	int cmpSize;
@@ -122,33 +128,59 @@ namespace gzip {
  * File handlers
  */
 namespace fhandler {
-	// splits files into vectors and ungzips the resulting strings
 
-	std::vector<std::string> processFFText(std::string& inputData) {
+	std::string unlzs(std::string& str_inputData) {
+		std::string str_outputData;
+		std::string dataWindow;
+		std::string str_lzsPointer;
+		int int_lzsPointer;
+		unsigned short bytes2Read;
+		short lzsOffset;
+		
+		for(unsigned int i = 0; i <= str_inputData.size(); i+=2) {
+			if(str_inputData.substr(i,2) == "f9") {
+					str_lzsPointer = str_inputData.substr(i+2,2);
+					int_lzsPointer = stoi(str_lzsPointer, nullptr, 16);
+					str_lzsPointer = std::bitset<8>(int_lzsPointer).to_string();
+					bytes2Read = stoi(str_lzsPointer.substr(0,2), nullptr, 2)* 2 + 4;
+					lzsOffset = stoi(str_lzsPointer.substr(2,6), nullptr, 2) + 1;
+
+					dataWindow = str_inputData.substr(i-(lzsOffset*2), bytes2Read*2);
+					str_outputData.append(dataWindow);
+					i += 2;
+			} else {
+				dataWindow = str_inputData.substr(i,2);
+				str_outputData.append(dataWindow);
+			}
+		}
+		return str_outputData;
+	}
+
+	std::vector<std::string> processFFText(std::string& unpackedData) {
 		std::vector<std::string> outputData;
 		std::string tempStorage;
 		std::string dataWindow;
-		
-		for(unsigned int i = 0; i < inputData.size(); i+=2) {
-			dataWindow = inputData.substr(i,2);
-			if(inputData.substr(i,2) == "ff") {
-				if(inputData.substr(i,4) == "ffff") {
-					dataWindow = inputData.substr(i,4);
-					tempStorage.append(dataWindow);
-					i+=2;
-				} else {
-					//std::cout << tempStorage << "\n";
+	//	std::string unpackedData = unlzs(inputData);
+
+		for(unsigned int i = 0; i <= unpackedData.size(); i+=2) {
+			dataWindow = unpackedData.substr(i,2);
+			if(unpackedData.substr(i,2) == "ff") {
+					dataWindow = unpackedData.substr(i,2);
 					tempStorage.append(dataWindow);
 					outputData.push_back(tempStorage);
 					tempStorage.clear();
-				}
+			} else if(unpackedData.substr(i,2) == "") {
+				outputData.push_back(tempStorage.substr(0,tempStorage.size()-2));
+				break;
 			} else {
+				dataWindow = unpackedData.substr(i,2);
 				tempStorage.append(dataWindow);
 			}
 		}
 		return outputData;
 	}
 }
+
 
 // Al Bhed text mode encoder
 std::string albhedSwap(const std::string& inputStr) {
