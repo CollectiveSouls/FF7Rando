@@ -136,7 +136,7 @@ namespace fhandler {
 		unsigned short bytes2Read;
 		short lzsOffset;
 		
-		for(unsigned int i = 0; i <= str_inputData.size(); i+=2) {
+		for(unsigned int i = 0; i < str_inputData.size(); i+=2) {
 			if(str_inputData.substr(i,2) == "f9") {
 					str_lzsPointer = str_inputData.substr(i+2,2);
 					int_lzsPointer = stoi(str_lzsPointer, nullptr, 16);
@@ -158,16 +158,33 @@ namespace fhandler {
 	std::vector<std::string> processFFText(std::string& inputData) {
 		std::vector<std::string> outputData;
 		std::string tempStorage;
+		std::string adjustedData;
 		std::string dataWindow;
-		std::string unpackedData = unlzs(inputData);
 
-		for(unsigned int i = 512; i <= unpackedData.size(); i+=2) {
+		// calculate header for exclusion
+		std::string rawHeaderSize = inputData.substr(0,4);
+		std::string swappedHeader = convert::endianSwapS(rawHeaderSize);
+		unsigned int headerSize = stoi(swappedHeader, nullptr, 16) * 2;
+		
+		adjustedData = inputData.substr(headerSize,inputData.size()-headerSize);
+		
+		std::string unpackedData = unlzs(adjustedData);
+
+		for(unsigned int i = 0; i < unpackedData.size(); i+=2) {
 			dataWindow = unpackedData.substr(i,2);
 			if(unpackedData.substr(i,2) == "ff") {
+				if(unpackedData.substr(i,4) == "ffff") {
+					dataWindow = unpackedData.substr(i,4);
+					tempStorage.append(dataWindow);
+					outputData.push_back(tempStorage);
+					tempStorage.clear();
+					i += 2;
+				} else {
 					dataWindow = unpackedData.substr(i,2);
 					tempStorage.append(dataWindow);
 					outputData.push_back(tempStorage);
 					tempStorage.clear();
+				}
 			} else if(unpackedData.substr(i,2) == "") {
 				outputData.push_back(tempStorage.substr(0,tempStorage.size()-2));
 				break;
@@ -183,7 +200,7 @@ namespace fhandler {
 		std::string ffText = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ÄÅÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûü♥°¢£↔→♪ßα  ´¨≠ÆØ∞±≤≥¥µ∂ΣΠπ⌡ªºΩæø¿¡¬√ƒ≈∆«»… ÀÃÕŒœ–—“”‘’÷◊ÿŸ⁄ ‹›ﬁﬂ■‧‚„‰ÂÊÁËÈÍÎÏÌÓÔ ÒÚÛÙıˆ˜¯˘˙˚¸˝˛ˇ       ";
 		std::string str_outputData;
 		unsigned int getChar;
-		for(unsigned int i = 0; i <= str_inputData.size(); i+=2) {
+		for(unsigned int i = 0; i < str_inputData.size(); i+=2) {
 			if(str_inputData.substr(i,2) == "ff") {
 				break;
 			} else {

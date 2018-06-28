@@ -158,11 +158,6 @@ void Kernel::randomizeItems(std::string& str_originData) {
 	tempContainer = fhandler::processFFText(arr_unpackedData[11].content);
 	std::cout << "\t" << tempContainer.size() << " items descriptions included" << std::endl;
 
-	for(int i = 0; i < tempContainer.size(); i++) {
-//		std::cout << tempContainer[i] << std::endl;
-		fhandler::decodeFFText(tempContainer[i]);
-	}
-
 	tempContainer = fhandler::processFFText(arr_unpackedData[19].content);
 	std::cout << "\t" << tempContainer.size() << " items names included" << std::endl;
 	
@@ -194,6 +189,11 @@ void Kernel::randomizeWeapons(std::string& str_originData) {
 
 	tempContainer = fhandler::processFFText(arr_unpackedData[12].content);
 	std::cout << "\t" << tempContainer.size() << " weapon descriptions included" << std::endl;
+
+//	for(int i = 0; i < tempContainer.size(); i++) {
+//		std::cout << tempContainer[i] << std::endl;
+//		fhandler::decodeFFText(tempContainer[i]);
+//	}
 
 	tempContainer = fhandler::processFFText(arr_unpackedData[20].content);
 	std::cout << "\t" << tempContainer.size() << " weapon names included" << std::endl;
@@ -262,7 +262,7 @@ void Kernel::randomizeAccessories(std::string& str_originData) {
 void Kernel::randomizeMateria(std::string& str_originData) {
 	std::vector<std::string> tempContainer;
 	unsigned short position = 0;
-	const unsigned short ROW_SIZE = 72;
+	const unsigned short ROW_SIZE = 40	;
 	std::string str_outputData;
 	
 	while(position < str_originData.size() ) {
