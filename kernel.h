@@ -6,15 +6,15 @@
 #define KERNEL_H_
 
 // std libs
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <sstream>
-#include <string>
-#include <vector>
+#include <iostream>		// std::cout
+#include <fstream>		// std::fstream, std::ifstream, std::ofstream
+#include <iomanip>		
+#include <sstream>		// std::stringstream
+#include <string>		// std::string
+#include <vector>		// std::vector
+#include <cstdlib>      // std::rand, std::srand
 #include <algorithm>    // std::random_shuffle
 #include <ctime>        // std::time
-#include <cstdlib>      // std::rand, std::srand
 // custom libs
 #include <utility.h>
 
@@ -138,29 +138,35 @@ void Kernel::randomizeItems(std::string& str_originData) {
 		tempContainer.push_back(str_originData.substr(position, ROW_SIZE) );
 		position += ROW_SIZE;
 	}
+
+//	for(unsigned short i = 0; i < tempContainer.size(); i++) {
+//		std::cout << tempContainer[i] << std::endl;	
+//	}
 	
 	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
 	
-	std::cout << tempContainer.size() << " items included" << std::endl;
+	std::cout << "\t" << tempContainer.size() << " items' data included" << std::endl;
 	
 	for(unsigned short i = 0; i < tempContainer.size(); i++) {
 		str_outputData.append(tempContainer[i]);
 	}
 	
 	arr_randoDataFile[4].content = str_outputData;
-	std::cout << "\tKernel::Items randomized successfully!" << std::endl;
-		
+	
 	//std::cout << arr_unpackedData[11].content << std::endl;
+	
 	tempContainer = fhandler::processFFText(arr_unpackedData[11].content);
-	std::cout << tempContainer.size() << " items descriptions included" << std::endl;
+	std::cout << "\t" << tempContainer.size() << " items descriptions included" << std::endl;
 
 	for(int i = 0; i < tempContainer.size(); i++) {
-		std::cout << tempContainer[i] << std::endl;
+//		std::cout << tempContainer[i] << std::endl;
+		fhandler::decodeFFText(tempContainer[i]);
 	}
 
 	tempContainer = fhandler::processFFText(arr_unpackedData[19].content);
-	std::cout << tempContainer.size() << " items names included" << std::endl;
-
+	std::cout << "\t" << tempContainer.size() << " items names included" << std::endl;
+	
+	std::cout << "Kernel::Items randomized successfully!" << std::endl;
 }
 
 void Kernel::randomizeWeapons(std::string& str_originData) {
@@ -174,7 +180,7 @@ void Kernel::randomizeWeapons(std::string& str_originData) {
 		position += ROW_SIZE;
 	}
 	
-	std::cout << tempContainer.size() << " weapons included" << std::endl;
+	std::cout << "\t" << tempContainer.size() << " weapons' data included" << std::endl;
 	
 	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
 	
@@ -183,14 +189,16 @@ void Kernel::randomizeWeapons(std::string& str_originData) {
 	}
 	
 	arr_randoDataFile[5].content = str_outputData;
-	std::cout << "\tKernel::Weapons randomized successfully!" << std::endl;
 	
 	//std::cout << arr_unpackedData[11].content << std::endl;
+
 	tempContainer = fhandler::processFFText(arr_unpackedData[12].content);
-	std::cout << tempContainer.size() << " weapon descriptions included" << std::endl;
+	std::cout << "\t" << tempContainer.size() << " weapon descriptions included" << std::endl;
 
 	tempContainer = fhandler::processFFText(arr_unpackedData[20].content);
-	std::cout << tempContainer.size() << " weapon names included" << std::endl;
+	std::cout << "\t" << tempContainer.size() << " weapon names included" << std::endl;
+
+	std::cout << "Kernel::Weapons randomized successfully!" << std::endl;
 }
 
 void Kernel::randomizeArmors(std::string& str_originData) {
@@ -203,6 +211,7 @@ void Kernel::randomizeArmors(std::string& str_originData) {
 		tempContainer.push_back(str_originData.substr(position, ROW_SIZE) );
 		position += ROW_SIZE;
 	}
+	std::cout << "\t" << tempContainer.size() << " armors' data included" << std::endl;
 	
 	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
 	
@@ -211,7 +220,14 @@ void Kernel::randomizeArmors(std::string& str_originData) {
 	}
 	
 	arr_randoDataFile[6].content = str_outputData;
-	std::cout << "\tKernel::Armors randomized successfully!" << std::endl;
+
+	tempContainer = fhandler::processFFText(arr_unpackedData[13].content);
+	std::cout << "\t" << tempContainer.size() << " armor descriptions included" << std::endl;
+
+	tempContainer = fhandler::processFFText(arr_unpackedData[21].content);
+	std::cout << "\t" << tempContainer.size() << " armor names included" << std::endl;
+
+	std::cout << "Kernel::Armors randomized successfully!" << std::endl;
 }
 
 void Kernel::randomizeAccessories(std::string& str_originData) {
@@ -224,7 +240,8 @@ void Kernel::randomizeAccessories(std::string& str_originData) {
 		tempContainer.push_back(str_originData.substr(position, ROW_SIZE) );
 		position += ROW_SIZE;
 	}
-	
+	std::cout << "\t" << tempContainer.size() << " accessories' data included" << std::endl;
+		
 	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
 	
 	for(unsigned short i = 0; i < tempContainer.size(); i++) {
@@ -232,7 +249,14 @@ void Kernel::randomizeAccessories(std::string& str_originData) {
 	}
 	
 	arr_randoDataFile[7].content = str_outputData;
-	std::cout << "\tKernel::Accessories randomized successfully!" << std::endl;
+
+	tempContainer = fhandler::processFFText(arr_unpackedData[14].content);
+	std::cout << "\t" << tempContainer.size() << " accessory descriptions included" << std::endl;
+
+	tempContainer = fhandler::processFFText(arr_unpackedData[22].content);
+	std::cout << "\t" << tempContainer.size() << " accessory names included" << std::endl;
+
+	std::cout << "Kernel::Accessories randomized successfully!" << std::endl;
 }
 
 void Kernel::randomizeMateria(std::string& str_originData) {
@@ -245,6 +269,7 @@ void Kernel::randomizeMateria(std::string& str_originData) {
 		tempContainer.push_back(str_originData.substr(position, ROW_SIZE) );
 		position += ROW_SIZE;
 	}
+	std::cout << "\t" << tempContainer.size() << " materia's data included" << std::endl;
 	
 	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
 	
@@ -253,9 +278,15 @@ void Kernel::randomizeMateria(std::string& str_originData) {
 	}
 	
 	arr_randoDataFile[8].content = str_outputData;
-	std::cout << "\tKernel::Materia randomized successfully!" << std::endl;
-}
 
+	tempContainer = fhandler::processFFText(arr_unpackedData[15].content);
+	std::cout << "\t" << tempContainer.size() << " materia descriptions included" << std::endl;
+
+	tempContainer = fhandler::processFFText(arr_unpackedData[23].content);
+	std::cout << "\t" << tempContainer.size() << " materia names included" << std::endl;
+
+	std::cout << "Kernel::Materia randomized successfully!" << std::endl;
+}
 
 /*
 void Kernel::reassemble() {

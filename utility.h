@@ -128,7 +128,6 @@ namespace gzip {
  * File handlers
  */
 namespace fhandler {
-
 	std::string unlzs(std::string& str_inputData) {
 		std::string str_outputData;
 		std::string dataWindow;
@@ -156,13 +155,13 @@ namespace fhandler {
 		return str_outputData;
 	}
 
-	std::vector<std::string> processFFText(std::string& unpackedData) {
+	std::vector<std::string> processFFText(std::string& inputData) {
 		std::vector<std::string> outputData;
 		std::string tempStorage;
 		std::string dataWindow;
-	//	std::string unpackedData = unlzs(inputData);
+		std::string unpackedData = unlzs(inputData);
 
-		for(unsigned int i = 0; i <= unpackedData.size(); i+=2) {
+		for(unsigned int i = 512; i <= unpackedData.size(); i+=2) {
 			dataWindow = unpackedData.substr(i,2);
 			if(unpackedData.substr(i,2) == "ff") {
 					dataWindow = unpackedData.substr(i,2);
@@ -178,6 +177,21 @@ namespace fhandler {
 			}
 		}
 		return outputData;
+	}
+	
+	void decodeFFText(std::string& str_inputData) {
+		std::string ffText = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ÄÅÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûü♥°¢£↔→♪ßα  ´¨≠ÆØ∞±≤≥¥µ∂ΣΠπ⌡ªºΩæø¿¡¬√ƒ≈∆«»… ÀÃÕŒœ–—“”‘’÷◊ÿŸ⁄ ‹›ﬁﬂ■‧‚„‰ÂÊÁËÈÍÎÏÌÓÔ ÒÚÛÙıˆ˜¯˘˙˚¸˝˛ˇ       ";
+		std::string str_outputData;
+		unsigned int getChar;
+		for(unsigned int i = 0; i <= str_inputData.size(); i+=2) {
+			if(str_inputData.substr(i,2) == "ff") {
+				break;
+			} else {
+				getChar = stoi(str_inputData.substr(i,2), nullptr, 16);
+				str_outputData.append(ffText.substr(getChar,1) );
+			}
+		}
+		std::cout << str_outputData << std::endl;
 	}
 }
 
