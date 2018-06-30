@@ -190,10 +190,10 @@ void Kernel::randomizeWeapons(std::string& str_originData) {
 	tempContainer = fhandler::processFFText(arr_unpackedData[12].content);
 	std::cout << "\t" << tempContainer.size() << " weapon descriptions included" << std::endl;
 
-//	for(int i = 0; i < tempContainer.size(); i++) {
-//		std::cout << tempContainer[i] << std::endl;
+	for(int i = 0; i < tempContainer.size(); i++) {
+		std::cout << tempContainer[i] << std::endl;
 //		fhandler::decodeFFText(tempContainer[i]);
-//	}
+	}
 
 	tempContainer = fhandler::processFFText(arr_unpackedData[20].content);
 	std::cout << "\t" << tempContainer.size() << " weapon names included" << std::endl;
