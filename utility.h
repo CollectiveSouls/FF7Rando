@@ -125,9 +125,42 @@ namespace gzip {
 }
 
 /*
- * File handlers
+ * File fftext
  */
-namespace fhandler {
+namespace fftext {
+	std::string compareWindow(std::string& str_inputData, std::string& str_dataWindow) {
+		std::string str_outputData;
+		int int_currentPos;
+		
+		for(unsigned int i = str_inputData.size(); i > 0; i-=2) {
+			if(str_inputData.substr(i,str_dataWindow.size() ) == str_dataWindow) {
+			//	str_outputData.insert(0, itoa("Temp", 16));
+				
+			}
+			int_currentPos = i * -1;
+		}
+	}
+
+	void compress(std::string& str_inputData) {
+		int int_dataWindow = 10;
+		std::string str_workingData = str_inputData;
+		std::string str_compareWindow;
+		while(int_dataWindow > 3) {
+			str_compareWindow = str_inputData.substr(str_inputData.size()-int_dataWindow,int_dataWindow);
+			str_workingData = compareWindow(str_inputData, str_compareWindow);	
+			int_dataWindow--;
+		}
+	}
+	
+	bool testSinglePass(std::string& str_inputData) {
+		for(unsigned int i = 0; i < str_inputData.size(); i+=2) {
+			if(str_inputData.substr(i,2) == "f9") {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	std::string unlzs(std::string& str_inputData) {
 		std::string str_outputData;
 		std::string dataWindow;
@@ -155,7 +188,8 @@ namespace fhandler {
 		return str_outputData;
 	}
 
-	std::vector<std::string> processFFText(std::string& inputData) {
+	// fully unpacks fftext documents passed to it.
+	std::vector<std::string> unpack(std::string& inputData) {
 		std::vector<std::string> outputData;
 		std::string tempStorage;
 		std::string adjustedData;
@@ -196,7 +230,8 @@ namespace fhandler {
 		return outputData;
 	}
 	
-	void decodeFFText(std::string& str_inputData) {
+	// converts FFText to readable ASCII text
+	void decode(std::string& str_inputData) {
 		std::string ffText = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ÄÅÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûü♥°¢£↔→♪ßα  ´¨≠ÆØ∞±≤≥¥µ∂ΣΠπ⌡ªºΩæø¿¡¬√ƒ≈∆«»… ÀÃÕŒœ–—“”‘’÷◊ÿŸ⁄ ‹›ﬁﬂ■‧‚„‰ÂÊÁËÈÍÎÏÌÓÔ ÒÚÛÙıˆ˜¯˘˙˚¸˝˛ˇ       ";
 		std::string str_outputData;
 		unsigned int getChar;
@@ -210,179 +245,177 @@ namespace fhandler {
 		}
 		std::cout << str_outputData << std::endl;
 	}
-}
-
-
-// Al Bhed text mode encoder
-std::string albhedSwap(const std::string& inputStr) {
-	unsigned int inputNum = std::stoi(inputStr, nullptr, 16);
-	unsigned int outputNum;
-	std::stringstream outputHex;
 	
-	switch (inputNum) {
-		case 34:					// A
-			outputNum = 58;			// Y
-			break;
-		case 35:					// B
-			outputNum = 49;			// P
-			break;
-		case 36:					// C
-			outputNum = 45;			// L
-			break;
-		case 37:					// D
-			outputNum = 53;			// T
-			break;
-		case 38:					// E
-			outputNum = 34;			// A
-			break;
-		case 39:					// F
-			outputNum = 55;			// W
-			break;
-		case 40:					// G
-			outputNum = 44;			// K
-			break;
-		case 41:					// H
-			outputNum = 51;			// R
-			break;
-		case 42:					// I
-			outputNum = 38;			// E
-			break;
-		case 43:					// J
-			outputNum = 59;			// Z
-			break;
-		case 44:					// K
-			outputNum = 40;			// G
-			break;
-		case 45:					// L
-			outputNum = 46;			// M
-			break;
-		case 46:					// M
-			outputNum = 52;			// S
-			break;
-		case 47:					// N
-			outputNum = 35;			// H
-			break;
-		case 48:					// O
-			outputNum = 54;			// U
-			break;
-		case 49:					// P
-			outputNum = 35;			// B
-			break;
-		case 50:					// Q
-			outputNum = 57;			// X
-			break;
-		case 51:					// R
-			outputNum = 47;			// N
-			break;
-		case 52:					// S
-			outputNum = 36;			// C
-			break;
-		case 53:					// T
-			outputNum = 37;			// D
-			break;
-		case 54:					// U
-			outputNum = 42;			// I
-			break;
-		case 55:					// V
-			outputNum = 43;			// J
-			break;
-		case 56:					// W
-			outputNum = 39;			// F
-			break;
-		case 57:					// X
-			outputNum = 50;			// Q
-			break;
-		case 58:					// Y
-			outputNum = 48;			// O
-			break;
-		case 59:					// Z
-			outputNum = 56;			// W
-			break;
-		case 66:					// a
-			outputNum = 90;			// y
-			break;
-		case 67:					// b
-			outputNum = 81;			// p
-			break;
-		case 68:					// c
-			outputNum = 77;			// l
-			break;
-		case 69:					// d
-			outputNum = 85;			// t
-			break;
-		case 70:					// e
-			outputNum = 66;			// a
-			break;
-		case 71:					// f
-			outputNum = 87;			// v
-			break;
-		case 72:					// g
-			outputNum = 76;			// k
-			break;
-		case 73:					// h
-			outputNum = 83;			// r
-			break;
-		case 74:					// i
-			outputNum = 70;			// e
-			break;
-		case 75:					// j
-			outputNum = 91;			// z
-			break;
-		case 76:					// k
-			outputNum = 72;			// g
-			break;
-		case 77:					// l
-			outputNum = 78;			// m
-			break;
-		case 78:					// m
-			outputNum = 84;			// s
-			break;
-		case 79:					// n
-			outputNum = 73;			// h
-			break;
-		case 80:					// o
-			outputNum = 86;			// u
-			break;
-		case 81:					// p
-			outputNum = 67;			// b
-			break;
-		case 82:					// q
-			outputNum = 89;			// x
-			break;
-		case 83:					// r
-			outputNum = 79;			// n
-			break;
-		case 84:					// s
-			outputNum = 68;			// c
-			break;
-		case 85:					// t
-			outputNum = 69;			// d
-			break;
-		case 86:					// u
-			outputNum = 74;			// i
-			break;
-		case 87:					// v
-			outputNum = 75;			// j
-			break;
-		case 88:					// w
-			outputNum = 71;			// f
-			break;
-		case 89:					// x
-			outputNum = 82;			// q
-			break;
-		case 90:					// y
-			outputNum = 80;			// o
-			break;
-		case 91:					// z
-			outputNum = 88;			// w
-			break;
-		default:
-			outputNum = inputNum;
+	// changes text in unpacked fftext strings to Al Bhed cipher encoding
+	std::string albhedEncode(const std::string& inputStr) {
+		unsigned int inputNum = std::stoi(inputStr, nullptr, 16);
+		unsigned int outputNum;
+		std::stringstream outputHex;
+		
+		switch (inputNum) {
+			case 34:					// A
+				outputNum = 58;			// Y
+				break;
+			case 35:					// B
+				outputNum = 49;			// P
+				break;
+			case 36:					// C
+				outputNum = 45;			// L
+				break;
+			case 37:					// D
+				outputNum = 53;			// T
+				break;
+			case 38:					// E
+				outputNum = 34;			// A
+				break;
+			case 39:					// F
+				outputNum = 55;			// W
+				break;
+			case 40:					// G
+				outputNum = 44;			// K
+				break;
+			case 41:					// H
+				outputNum = 51;			// R
+				break;
+			case 42:					// I
+				outputNum = 38;			// E
+				break;
+			case 43:					// J
+				outputNum = 59;			// Z
+				break;
+			case 44:					// K
+				outputNum = 40;			// G
+				break;
+			case 45:					// L
+				outputNum = 46;			// M
+				break;
+			case 46:					// M
+				outputNum = 52;			// S
+				break;
+			case 47:					// N
+				outputNum = 35;			// H
+				break;
+			case 48:					// O
+				outputNum = 54;			// U
+				break;
+			case 49:					// P
+				outputNum = 35;			// B
+				break;
+			case 50:					// Q
+				outputNum = 57;			// X
+				break;
+			case 51:					// R
+				outputNum = 47;			// N
+				break;
+			case 52:					// S
+				outputNum = 36;			// C
+				break;
+			case 53:					// T
+				outputNum = 37;			// D
+				break;
+			case 54:					// U
+				outputNum = 42;			// I
+				break;
+			case 55:					// V
+				outputNum = 43;			// J
+				break;
+			case 56:					// W
+				outputNum = 39;			// F
+				break;
+			case 57:					// X
+				outputNum = 50;			// Q
+				break;
+			case 58:					// Y
+				outputNum = 48;			// O
+				break;
+			case 59:					// Z
+				outputNum = 56;			// W
+				break;
+			case 66:					// a
+				outputNum = 90;			// y
+				break;
+			case 67:					// b
+				outputNum = 81;			// p
+				break;
+			case 68:					// c
+				outputNum = 77;			// l
+				break;
+			case 69:					// d
+				outputNum = 85;			// t
+				break;
+			case 70:					// e
+				outputNum = 66;			// a
+				break;
+			case 71:					// f
+				outputNum = 87;			// v
+				break;
+			case 72:					// g
+				outputNum = 76;			// k
+				break;
+			case 73:					// h
+				outputNum = 83;			// r
+				break;
+			case 74:					// i
+				outputNum = 70;			// e
+				break;
+			case 75:					// j
+				outputNum = 91;			// z
+				break;
+			case 76:					// k
+				outputNum = 72;			// g
+				break;
+			case 77:					// l
+				outputNum = 78;			// m
+				break;
+			case 78:					// m
+				outputNum = 84;			// s
+				break;
+			case 79:					// n
+				outputNum = 73;			// h
+				break;
+			case 80:					// o
+				outputNum = 86;			// u
+				break;
+			case 81:					// p
+				outputNum = 67;			// b
+				break;
+			case 82:					// q
+				outputNum = 89;			// x
+				break;
+			case 83:					// r
+				outputNum = 79;			// n
+				break;
+			case 84:					// s
+				outputNum = 68;			// c
+				break;
+			case 85:					// t
+				outputNum = 69;			// d
+				break;
+			case 86:					// u
+				outputNum = 74;			// i
+				break;
+			case 87:					// v
+				outputNum = 75;			// j
+				break;
+			case 88:					// w
+				outputNum = 71;			// f
+				break;
+			case 89:					// x
+				outputNum = 82;			// q
+				break;
+			case 90:					// y
+				outputNum = 80;			// o
+				break;
+			case 91:					// z
+				outputNum = 88;			// w
+				break;
+			default:
+				outputNum = inputNum;
+		}
+		
+		outputHex << std::setfill('0') << std::setw(2) << std::hex << outputNum;
+		
+		return outputHex.str();
 	}
-	
-	outputHex << std::setfill('0') << std::setw(2) << std::hex << outputNum;
-	
-	return outputHex.str();
 }
-
 #endif /* UTILITY_H_ */
