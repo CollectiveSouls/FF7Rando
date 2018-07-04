@@ -35,7 +35,7 @@ struct DataFile {
 };
 
 /*
- * Conversion handlers
+ * binary/hex data conversion handlers
  */
 namespace convert {
 	std::string hex2bin(std::string const& s) {
@@ -92,7 +92,7 @@ namespace convert {
 }
 
 /*
- * Compression handlers
+ * gzip compression handlers
  */
 namespace gzip {
 	std::string compress(const std::string& data) {
@@ -125,11 +125,13 @@ namespace gzip {
 }
 
 /*
- * File fftext
+ * fftext file handlers
  */
 namespace fftext {
 	std::string compareWindow(std::string& str_inputData, std::string& str_dataWindow) {
 		std::string str_outputData;
+
+		// NOTE: this *IS* used in the for loop below, the debugger is stupid
 		int int_currentPos;
 		
 		for(unsigned int i = str_inputData.size(); i > 0; i-=2) {
@@ -139,17 +141,21 @@ namespace fftext {
 			}
 			int_currentPos = i * -1;
 		}
+		
+		return str_outputData;
 	}
 
-	void compress(std::string& str_inputData) {
+	std::string relzs(std::string& str_inputData) {
 		int int_dataWindow = 10;
 		std::string str_workingData = str_inputData;
 		std::string str_compareWindow;
+		std::string str_outputData;
 		while(int_dataWindow > 3) {
 			str_compareWindow = str_inputData.substr(str_inputData.size()-int_dataWindow,int_dataWindow);
 			str_workingData = compareWindow(str_inputData, str_compareWindow);	
 			int_dataWindow--;
 		}
+		return str_outputData;
 	}
 	
 	bool testSinglePass(std::string& str_inputData) {
@@ -170,6 +176,7 @@ namespace fftext {
 		short lzsOffset;
 		
 		for(unsigned int i = 0; i < str_inputData.size(); i+=2) {
+			// !TODO: Add support for the battle message files which include text replacement flag bytes.
 			if(str_inputData.substr(i,2) == "f9") {
 					str_lzsPointer = str_inputData.substr(i+2,2);
 					int_lzsPointer = stoi(str_lzsPointer, nullptr, 16);

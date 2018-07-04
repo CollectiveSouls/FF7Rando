@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 	Yamada yamada("!imgs-unpacked\\NTSC\\DISC1\\INIT\\YAMADA.BIN");
 	Scene scene("!imgs-unpacked\\NTSC\\DISC1\\BATTLE\\SCENE.BIN");
 	
-	std::cout << "Al Bhed Swapped \"d\": " + albhedSwap("45") << std::endl;
+	std::cout << "Al Bhed Swapped \"d\": " + fftext::albhedEncode("45") << std::endl;
 	
 	return 0;
 }

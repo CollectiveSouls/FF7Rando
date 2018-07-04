@@ -20,17 +20,18 @@
 
 class Kernel {
 	public:
+		// Kernel::methods
 		Kernel();
 		Kernel(std::string str_target);
 		void randomize();
 		std::string present(std::string str_target);
 	private:
-		// variables
+		// Kernel::variables
 		std::string str_target;
 		std::string str_rawData;
 		std::vector<DataFile> arr_unpackedData;
 		std::vector<DataFile> arr_randoDataFile;
-		// methods
+		// Kernel::methods
 		std::vector<DataFile> unpackFile(std::string& str_inputData);
 		std::vector<DataFile> separateData(std::string& str_inputData);
 		void randomizeItems(std::string& str_originData);
@@ -39,9 +40,7 @@ class Kernel {
 		void randomizeAccessories(std::string& str_originData);
 		void randomizeMateria(std::string& str_originData);
 		// old and needs refactoring
-		// void disassemble();
 		// void reassemble();
-		// std::vector<std::pair<unsigned int, std::string> > materiaExclusions(std::vector<std::string> arr);
 }; // end class Kernel
 
 Kernel::Kernel(std::string str_target) {
@@ -320,9 +319,9 @@ void Kernel::randomizeMateria(std::string& str_originData) {
 	tempContainer = fftext::unpack(arr_unpackedData[15].content);
 	std::cout << "\t" << tempContainer.size() << " materia descriptions included" << std::endl;
 	
-	for(int i = 0; i < tempContainer.size(); i++) {
+	for(unsigned int i = 0; i < tempContainer.size(); i++) {
 //		std::cout << tempContainer[i] << std::endl;
-		fftext::decode(tempContainer[i]);
+//		fftext::decode(tempContainer[i]);
 	}
 
 	tempContainer = fftext::unpack(arr_unpackedData[23].content);
@@ -340,76 +339,6 @@ void Kernel::reassemble() {
 		std::cout << i << std::endl;
 	}
 }
- 
-void Kernel::disassemble() {
-	// TODO: split individual files and data structs
-	unsigned int rowSize;
-	std::vector<unsigned int> dataPoints;
-	unsigned int tempValue;
-	
-	std::cout << "DSM began successfully" << std::endl;
-
-	for(unsigned int i = 0; i < arr_unpackedFileDataHex.size(); i++) {
-		if(i == 0) {				// Command Data
-			rowSize = 8;
-			dataPoints = {1,1,2,2,2};
-			arr_dsmFileDataHex.push_back(fhandler::split2WorkingData(arr_unpackedFileDataHex[i], rowSize, dataPoints) );
-		} else if (i == 1) {		// Attack Data
-			rowSize = 28;
-			dataPoints = {1,1,1,1,2,2,2,2,1,1,1,1,1,1,1,1,4,2,2};
-			arr_dsmFileDataHex.push_back(fhandler::split2WorkingData(arr_unpackedFileDataHex[i], rowSize, dataPoints));
-		} else if (i == 2) {		// Battle & Growth Data
-			rowSize = 0;
-			dataPoints = {56,56,56,56,56,56,56,56,56,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,1508,540,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,64,56};
-			arr_dsmFileDataHex.push_back(fhandler::split2WorkingData(arr_unpackedFileDataHex[i], rowSize, dataPoints));
-		} else if (i == 3) {		// Initialization Data
-			rowSize = 2876;
-			dataPoints = {2876};
-			arr_dsmFileDataHex.push_back(fhandler::split2WorkingData(arr_unpackedFileDataHex[i], rowSize, dataPoints));
-		} else if (i == 4) {		// Item Data
-			rowSize = 28;
-			dataPoints = {8,2,2,1,1,1,1,1,1,1,1,4,2};
-			arr_dsmFileDataHex.push_back(fhandler::split2WorkingData(arr_unpackedFileDataHex[i], rowSize, dataPoints));
-		} else if (i == 5) {		// Weapon Data
-			rowSize = 44;
-			dataPoints = {1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2};
-			arr_dsmFileDataHex.push_back(fhandler::split2WorkingData(arr_unpackedFileDataHex[i], rowSize, dataPoints));
-		} else if (i == 6) {		// Armor Data
-			rowSize = 36;
-			dataPoints = {1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,2,2};
-			arr_dsmFileDataHex.push_back(fhandler::split2WorkingData(arr_unpackedFileDataHex[i], rowSize, dataPoints));
-		} else if (i == 7) {		// Accessory Data
-			rowSize = 16;
-			dataPoints = {1,1,1,1,1,1,2,4,2,2};
-			arr_dsmFileDataHex.push_back(fhandler::split2WorkingData(arr_unpackedFileDataHex[i], rowSize, dataPoints));
-		} else if (i == 8) {		// Materia Data
-			rowSize = 20;
-			dataPoints = {1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1};
-			arr_dsmFileDataHex.push_back(fhandler::split2WorkingData(arr_unpackedFileDataHex[i], rowSize, dataPoints));
-		} else if (i >= 9) {		// FFText Files
-			rowSize = 0;
-			arr_ffTexts = fftext::unpack(arr_unpackedFileDataHex[i]);
-			//std::cout << arr_ffTexts[2] << std::endl;
-			std::cout << "FFtext 9_" << i - 9 << " Completed Successfully!\n\n";
-		}
-		// std::cout << "DSM completed successfully " << i << " times." << std::endl;
-	}
-}
-
-// exclude dummied and master materias
-std::vector<std::pair<unsigned int, std::string>> Kernel::materiaExclusions(std::vector<std::string> arr) {
-	std::vector<std::pair<unsigned int,std::string>> dataExclusions;
-	std::string tempStr;
-	
-	for (unsigned short i = 0; i < (arr.size() / 2); i++) {
-		tempStr = arr[i];
-		if ( arr[i].substr(0,16) == "ffffffffffffffff" ) {
-			dataExclusions.push_back(std::make_pair(i, tempStr));
-			//dataExclusions.push_back(tempStr);
-		}
-	}
-	return dataExclusions;
-} // end Kernel::materiaExclusions()
 */
 
 #endif /* KERNEL_H_ */
