@@ -38,6 +38,13 @@ struct DataFile {
  * binary/hex data conversion handlers
  */
 namespace convert {
+	std::string int2hex(int int_inputData) {
+		std::stringstream sstr_outputData;
+		sstr_outputData << std::setfill('0') << std::setw(2) << std::hex << int_inputData;
+		
+		return sstr_outputData.str();
+	}
+	
 	std::string hex2bin(std::string const& s) {
 		assert(s.length() % 2 == 0);
 
@@ -128,43 +135,63 @@ namespace gzip {
  * fftext file handlers
  */
 namespace fftext {
-	std::string compareWindow(std::string& str_inputData, std::string& str_dataWindow) {
-		std::string str_outputData;
-
-		// NOTE: this *IS* used in the for loop below, the debugger is stupid
-		int int_currentPos;
+	// returns the offset value in chars
+	unsigned int uint_findPosition(unsigned int uint_initOffset, std::string& str_targetData, std::string& str_dataWindow) {
+		unsigned int uint_distance = str_dataWindow.size() * 2;
+		unsigned int uint_offset = str_targetData.size() - uint_distance - uint_initOffset;
+		unsigned int uint_dataWindowSize = str_dataWindow.size();
+		std::string str_targetSubstring;
 		
-		for(unsigned int i = str_inputData.size(); i > 0; i-=2) {
-			if(str_inputData.substr(i,str_dataWindow.size() ) == str_dataWindow) {
-			//	str_outputData.insert(0, itoa("Temp", 16));
-				
+		while(uint_offset < 128) {
+			str_targetSubstring = str_targetData.substr(uint_offset, uint_dataWindowSize);
+			
+			if(str_dataWindow == str_targetSubstring) {
+				return uint_offset - str_dataWindow.size();
+			} else {
+				uint_offset += 2;
 			}
-			int_currentPos = i * -1;
 		}
-		
-		return str_outputData;
+		return 0;
 	}
 
+	// time to do some heavy lifting
 	std::string relzs(std::string& str_inputData) {
-		int int_dataWindow = 10;
-		std::string str_workingData = str_inputData;
-		std::string str_compareWindow;
+		unsigned int int_count = 0;
+		unsigned int int_offset = 0;
 		std::string str_outputData;
-		while(int_dataWindow > 3) {
-			str_compareWindow = str_inputData.substr(str_inputData.size()-int_dataWindow,int_dataWindow);
-			str_workingData = compareWindow(str_inputData, str_compareWindow);	
-			int_dataWindow--;
-		}
-		return str_outputData;
-	}
-	
-	bool testSinglePass(std::string& str_inputData) {
-		for(unsigned int i = 0; i < str_inputData.size(); i+=2) {
-			if(str_inputData.substr(i,2) == "f9") {
-				return true;
+		unsigned int uint_position;
+		std::string str_workingData;
+		unsigned int uint_workingDataSize = str_inputData.size();
+		std::string str_dataWindow;
+		unsigned int uint_dataWindowStart;
+		unsigned int uint_dataWindowSize = 10;
+		// temporary variables for conversion work
+		std::string str_tempBin;
+		unsigned int int_tempInt;
+		
+		while(uint_dataWindowSize > 3) {
+			// initialize values
+			uint_dataWindowStart = uint_workingDataSize - uint_dataWindowSize;
+			str_dataWindow = str_workingData.substr(uint_dataWindowStart, uint_dataWindowSize);
+			
+			uint_position = uint_findPosition(int_offset, str_workingData, str_dataWindow);
+
+			if(uint_position != 0) {
+				str_outputData.insert(0, str_workingData.substr(uint_workingDataSize - 2, 2) );
+				str_workingData.erase(uint_workingDataSize - 2, 2);
+			} else {
+				str_tempBin.insert(0,std::bitset<2>((uint_dataWindowSize - 4) / 2).to_string() );
+				str_tempBin.insert(2,std::bitset<6>(uint_position).to_string() );
+				int_tempInt = stoi(str_tempBin, nullptr, 2);
+				str_outputData.insert(0, "F9" + convert::int2hex(int_tempInt) );
+				str_workingData.erase(uint_workingDataSize - uint_dataWindowSize, uint_dataWindowSize);
+			}
+			
+			if(int_count == str_inputData.size() ) {
+				uint_dataWindowSize--;
 			}
 		}
-		return false;
+		return str_outputData;
 	}
 	
 	std::string unlzs(std::string& str_inputData) {
