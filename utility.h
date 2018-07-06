@@ -103,15 +103,13 @@ namespace convert {
  */
 namespace gzip {
 	std::string compress(const std::string& data) {
-		namespace bio = boost::iostreams;
-
 		std::stringstream compressed;
 		std::stringstream origin(data);
 
-		bio::filtering_streambuf<bio::input> out;
-		out.push(bio::gzip_compressor(bio::gzip_params(bio::gzip::best_compression)));
+		boost::iostreams::filtering_streambuf<boost::iostreams::input> out;
+		out.push(boost::iostreams::gzip_compressor(boost::iostreams::gzip_params(boost::iostreams::gzip::best_compression)));
 		out.push(origin);
-		bio::copy(out, compressed);
+		boost::iostreams::copy(out, compressed);
 
 		return compressed.str();
 	}
@@ -135,7 +133,16 @@ namespace gzip {
  * fftext file handlers
  */
 namespace fftext {
-	// returns the offset value in chars
+	bool bool_verifyString(std::string& str_inputData) {
+		for(unsigned int i = 0; i < str_inputData.size(); i+=2) {
+			if(str_inputData.substr(i,2) == "ff") {
+				return false;
+			}
+		}
+		return true;
+	}  
+
+	// returns the offset value in chars	
 	unsigned int uint_findPosition(unsigned int uint_initOffset, std::string& str_targetData, std::string& str_dataWindow) {
 		unsigned int uint_distance = str_dataWindow.size() * 2;
 		unsigned int uint_offset = str_targetData.size() - uint_distance - uint_initOffset;
@@ -174,21 +181,26 @@ namespace fftext {
 			uint_dataWindowStart = uint_workingDataSize - uint_dataWindowSize;
 			str_dataWindow = str_workingData.substr(uint_dataWindowStart, uint_dataWindowSize);
 			
-			uint_position = uint_findPosition(int_offset, str_workingData, str_dataWindow);
+			if(bool_verifyString(str_dataWindow) ) {
+				uint_position = uint_findPosition(int_offset, str_workingData, str_dataWindow);
 
-			if(uint_position != 0) {
-				str_outputData.insert(0, str_workingData.substr(uint_workingDataSize - 2, 2) );
-				str_workingData.erase(uint_workingDataSize - 2, 2);
+				if(uint_position != 0) {
+					str_outputData.insert(0, str_workingData.substr(uint_workingDataSize - 2, 2) );
+					str_workingData.erase(uint_workingDataSize - 2, 2);
+				} else {
+					str_tempBin.insert(0,std::bitset<2>((uint_dataWindowSize - 4) / 2).to_string() );
+					str_tempBin.insert(2,std::bitset<6>(uint_position).to_string() );
+					int_tempInt = stoi(str_tempBin, nullptr, 2);
+					str_outputData.insert(0, "f9" + convert::int2hex(int_tempInt) );
+					str_workingData.erase(uint_workingDataSize - uint_dataWindowSize, uint_dataWindowSize);
+				}
+				
+				if(int_count == str_inputData.size() ) {
+					uint_dataWindowSize--;
+				}
 			} else {
-				str_tempBin.insert(0,std::bitset<2>((uint_dataWindowSize - 4) / 2).to_string() );
-				str_tempBin.insert(2,std::bitset<6>(uint_position).to_string() );
-				int_tempInt = stoi(str_tempBin, nullptr, 2);
-				str_outputData.insert(0, "F9" + convert::int2hex(int_tempInt) );
-				str_workingData.erase(uint_workingDataSize - uint_dataWindowSize, uint_dataWindowSize);
-			}
-			
-			if(int_count == str_inputData.size() ) {
-				uint_dataWindowSize--;
+				str_outputData.insert(0, str_workingData.substr(uint_workingDataSize - 2, 2) );
+				str_workingData.erase(uint_workingDataSize - 2, 2);	
 			}
 		}
 		return str_outputData;
