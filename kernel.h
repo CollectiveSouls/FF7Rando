@@ -1,7 +1,6 @@
 /*
  * kernel.h
  */
-
 #ifndef KERNEL_H_
 #define KERNEL_H_
 
@@ -301,7 +300,7 @@ void Kernel::randomizeMateria(std::string& str_originData) {
 	unsigned short position = 0;
 	const unsigned short ROW_SIZE = 40	;
 	std::string str_outputData;
-	
+		
 	while(position < str_originData.size() ) {
 		tempContainer.push_back(str_originData.substr(position, ROW_SIZE) );
 		position += ROW_SIZE;
@@ -318,11 +317,15 @@ void Kernel::randomizeMateria(std::string& str_originData) {
 
 	tempContainer = fftext::unpack(arr_unpackedData[15].content);
 	std::cout << "\t" << tempContainer.size() << " materia descriptions included" << std::endl;
-	
+
+	std::string recombined;
 	for(unsigned int i = 0; i < tempContainer.size(); i++) {
-//		std::cout << tempContainer[i] << std::endl;
+		std::cout << tempContainer[i] << std::endl;
 //		fftext::decode(tempContainer[i]);
+//		recombined.append(tempContainer[i]);
 	}
+//	std::string tempString = fftext::relzs(recombined);
+//	std::cout << tempString << std::endl;
 
 	tempContainer = fftext::unpack(arr_unpackedData[23].content);
 	std::cout << "\t" << tempContainer.size() << " materia names included" << std::endl;

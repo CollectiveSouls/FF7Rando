@@ -14,12 +14,19 @@
 #include <stdlib.h>
 #include <cassert>
 #include <bitset>
+#include <map>
 // boost libs
 #include <boost/iostreams/filter/zlib.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
+
+struct ItemRecord {
+	std::map<std::string, std::string> Data;
+	std::string Name;
+	std::string Desc;
+};
 
 struct ItemData {
 	std::string content;
@@ -163,11 +170,10 @@ namespace fftext {
 
 	// time to do some heavy lifting
 	std::string relzs(std::string& str_inputData) {
-		unsigned int int_count = 0;
 		unsigned int int_offset = 0;
 		std::string str_outputData;
 		unsigned int uint_position;
-		std::string str_workingData;
+		std::string str_workingData = str_inputData;
 		unsigned int uint_workingDataSize = str_inputData.size();
 		std::string str_dataWindow;
 		unsigned int uint_dataWindowStart;
@@ -178,12 +184,16 @@ namespace fftext {
 		
 		while(uint_dataWindowSize > 3) {
 			// initialize values
-			uint_dataWindowStart = uint_workingDataSize - uint_dataWindowSize;
-			str_dataWindow = str_workingData.substr(uint_dataWindowStart, uint_dataWindowSize);
+			uint_dataWindowStart = uint_workingDataSize - (uint_dataWindowSize * 2);
+
+			str_dataWindow = str_workingData.substr(uint_dataWindowStart, uint_dataWindowSize * 2);
 			
 			if(bool_verifyString(str_dataWindow) ) {
+				// testing runtime error
+				std::cout << str_dataWindow << " " << uint_dataWindowStart << " " << str_outputData << std::endl;
+				uint_dataWindowSize--;
+			
 				uint_position = uint_findPosition(int_offset, str_workingData, str_dataWindow);
-
 				if(uint_position != 0) {
 					str_outputData.insert(0, str_workingData.substr(uint_workingDataSize - 2, 2) );
 					str_workingData.erase(uint_workingDataSize - 2, 2);
@@ -195,7 +205,7 @@ namespace fftext {
 					str_workingData.erase(uint_workingDataSize - uint_dataWindowSize, uint_dataWindowSize);
 				}
 				
-				if(int_count == str_inputData.size() ) {
+				if(str_workingData.substr(0, uint_dataWindowSize) == str_dataWindow) {
 					uint_dataWindowSize--;
 				}
 			} else {
