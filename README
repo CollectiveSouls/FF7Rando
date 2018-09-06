@@ -25,11 +25,14 @@ Character Randomization
 (including who the Controllable character himself is), the program will match the 
 characters attributes to them (Level map, Limit breaks, moves). 
 
+Note about Field Models
+-----------------------
 	The changing of the controllable character (normally Cloud) will have graphical 
 glitches in animations. This is because most other characters have a different bone count
 than Cloud, this is a problem since this will cause bones to move which usually should 
-not be. Note this is only the case for Field specific animations which are specific to that
+not be. This is only the case for Field specific animations which are specific to that
 screen(Ladder climbing, Cloud jumping off the train in the intro, etc). 
+
 
 	
 	
