@@ -1,1 +1,35 @@
-# TODO: Actually fill this with information
+Final Fantasy VII Randomizer
+============================
+
+Features
+--------
+* Item Randomization
+	-	Items
+	-	Weapons
+	-	Armor
+	-	Accessories
+	-	Materia
+	
+* Character Randomization (Implementation explained in "Character Randomization" section)
+	-	Field Models 
+	-	Battle Models
+
+Item Randomization
+------------------
+Judas stuff
+
+Character Randomization
+-----------------------
+	Characters can be randomized based on a generated seed or can be chosen manually 
+(feature to come). Once the order in which the characters has been generated 
+(including who the Controllable character himself is), the program will match the 
+characters attributes to them (Level map, Limit breaks, moves). 
+
+	The changing of the controllable character (normally Cloud) will have graphical 
+glitches in animations. This is because most other characters have a different bone count
+than Cloud, this is a problem since this will cause bones to move which usually should 
+not be. Note this is only the case for Field specific animations which are specific to that
+screen(Ladder climbing, Cloud jumping off the train in the intro, etc). 
+
+	
+	
