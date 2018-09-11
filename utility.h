@@ -248,7 +248,9 @@ namespace fftext {
 	std::vector<std::string> unpack(std::string& inputData) {
 		std::vector<std::string> outputData;
 		std::string tempStorage;
-		std::string adjustedData;
+    std::string headerData;         // fftext header data
+      std::string currHeaderVal;    // current header value
+		std::string bodyData;     // fftext body data
 		std::string dataWindow;
 
 		// calculate header for exclusion
@@ -256,10 +258,14 @@ namespace fftext {
 		std::string swappedHeader = convert::endianSwapS(rawHeaderSize);
 		unsigned int headerSize = stoi(swappedHeader, nullptr, 16) * 2;
 		
-		adjustedData = inputData.substr(headerSize,inputData.size()-headerSize);
-		
-		std::string unpackedData = unlzs(adjustedData);
-
+    // create headerData string
+    headerData = inputData.substr(0, headerSize);
+    
+    // separate and inflate body data
+		bodyData = inputData.substr(headerSize,inputData.size()-headerSize);
+		std::string unpackedData = unlzs(bodyData);
+    
+    // separate body data into items
 		for(unsigned int i = 0; i < unpackedData.size(); i+=2) {
 			dataWindow = unpackedData.substr(i,2);
 			if(unpackedData.substr(i,2) == "ff") {
@@ -283,6 +289,17 @@ namespace fftext {
 				tempStorage.append(dataWindow);
 			}
 		}
+
+    // use header indices to re-include items without descriptions
+    for(unsigned int i = 0; i < headerData.size(); i+=4) {
+        currHeaderVal = headerData.substr(i,4);
+        std::cout << i/4 << ".  " << headerData.substr(i,4) << " | ";
+        if(currHeaderVal == headerData.substr(i+4, 4)) {
+            outputData.insert(outputData.begin()+(i/4-1), "FF");
+        }          
+    }
+   // std::cout << std::endl;
+  
 		return outputData;
 	}
 	

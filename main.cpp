@@ -1,11 +1,12 @@
 // std libs
-#include <string>
-#include <vector>
+// N/A
+
 // custom libs
-//#include <field.h>
 #include <kernel.h>
 #include <scene.h>
 #include <window.h>
+//#include <menu.h>
+//#include <field.h>
 #include <yamada.h>
 #include <utility.h>
 
@@ -16,12 +17,26 @@ int main(int argc, char **argv) {
 	// "!imgs-unpacked\\NTSC\\DISC1\\MINT\\DISKINFO.CNF"
 	// ...check first and third lines of each file.
 
-	// initialize kernel
+	// init kernel: handles items; and character bases and growth rates
 	Kernel kernel("!imgs-unpacked\\NTSC\\DISC1\\INIT\\KERNEL.BIN");
-	Window window("!imgs-unpacked\\NTSC\\DISC1\\INIT\\WINDOW.BIN");
-	Yamada yamada("!imgs-unpacked\\NTSC\\DISC1\\INIT\\YAMADA.BIN");
+
+  // init Window: handles font sets and menu layouts
+	// Window window("!imgs-unpacked\\NTSC\\DISC1\\INIT\\WINDOW.BIN");
+
+  // init Menu: handles menu-specific data such as shop item IDs, dialogues, and character portraits
+  // Menu menu("!imgs-unpacked\\NTSC\\DISC1\\MENU");
+
+  // init Scene: handles battle data modidifications
 	Scene scene("!imgs-unpacked\\NTSC\\DISC1\\BATTLE\\SCENE.BIN");
+
+  // init Field: handles overworld data
+  // Field field("!imgs-unpacked\\NTSC\\DISC1\\FIELD");  
+
+	// init Yamada: handles critical file checksums
+  Yamada yamada("!imgs-unpacked\\NTSC\\DISC1\\INIT\\YAMADA.BIN");
+
 	
+  // NOTE: Placeholder/Test for Al-Bhed cypher swapping. Swaps characters based on hex encoded binary value.
 	std::cout << "Al Bhed Swapped \"d\": " + fftext::albhedEncode("45") << std::endl;
 	
 	return 0;

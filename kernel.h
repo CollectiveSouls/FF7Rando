@@ -70,6 +70,7 @@ void Kernel::randomize() {
 	randomizeMateria(arr_unpackedData[8].content);
 } // end Kernel::randomize()
 
+
 /*
 // Begin Private Methods
 */
@@ -170,6 +171,7 @@ std::vector<DataFile> Kernel::unpackFile(std::string& str_inputData) {
 } // end Kernel::unpackFile()
 
 void Kernel::randomizeItems(std::string& str_originData) {
+  // TODO: add arguments provided by Qt interface
 	std::vector<std::string> tempContainer;
 	unsigned short position = 0;
 	const unsigned short ROW_SIZE = 56;
@@ -179,10 +181,6 @@ void Kernel::randomizeItems(std::string& str_originData) {
 		tempContainer.push_back(str_originData.substr(position, ROW_SIZE) );
 		position += ROW_SIZE;
 	}
-
-//	for(unsigned short i = 0; i < tempContainer.size(); i++) {
-//		std::cout << tempContainer[i] << std::endl;	
-//	}
 	
 	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
 	
@@ -193,9 +191,7 @@ void Kernel::randomizeItems(std::string& str_originData) {
 	}
 	
 	arr_randoDataFile[4].content = str_outputData;
-	
-	//std::cout << arr_unpackedData[11].content << std::endl;
-	
+		
 	tempContainer = fftext::unpack(arr_unpackedData[11].content);
 	std::cout << "\t" << tempContainer.size() << " items descriptions included" << std::endl;
 
@@ -305,6 +301,7 @@ void Kernel::randomizeMateria(std::string& str_originData) {
 		tempContainer.push_back(str_originData.substr(position, ROW_SIZE) );
 		position += ROW_SIZE;
 	}
+  
 	std::cout << "\t" << tempContainer.size() << " materia's data included" << std::endl;
 	
 	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
@@ -316,19 +313,19 @@ void Kernel::randomizeMateria(std::string& str_originData) {
 	arr_randoDataFile[8].content = str_outputData;
 
 	tempContainer = fftext::unpack(arr_unpackedData[15].content);
-	std::cout << "\t" << tempContainer.size() << " materia descriptions included" << std::endl;
+ 	std::cout << "\t" << tempContainer.size() << " materia descriptions included" << std::endl;
+  
+ 	tempContainer = fftext::unpack(arr_unpackedData[23].content);
+	std::cout << "\t" << tempContainer.size() << " materia names included" << std::endl;
 
-	std::string recombined;
-	for(unsigned int i = 0; i < tempContainer.size(); i++) {
-		std::cout << tempContainer[i] << std::endl;
+//	std::string recombined;
+//	for(unsigned int i = 0; i < tempContainer.size(); i++) {
+//		std::cout << tempContainer[i] << std::endl;
 //		fftext::decode(tempContainer[i]);
 //		recombined.append(tempContainer[i]);
-	}
+//	}
 //	std::string tempString = fftext::relzs(recombined);
 //	std::cout << tempString << std::endl;
-
-	tempContainer = fftext::unpack(arr_unpackedData[23].content);
-	std::cout << "\t" << tempContainer.size() << " materia names included" << std::endl;
 
 	std::cout << "Kernel::Materia randomized successfully!" << std::endl;
 }
