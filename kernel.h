@@ -34,7 +34,7 @@ class Kernel {
 		std::vector<DataFile> unpackFile(std::string& str_inputData);
 		std::vector<DataFile> separateData(std::string& str_inputData);
     std::vector<ItemRecord> structItems(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData);
-		void randomizeItems(std::string& str_originData);
+		void randomizeItems();
 		void randomizeWeapons(std::string& str_originData);
 		void randomizeArmors(std::string& str_originData);
 		void randomizeAccessories(std::string& str_originData);
@@ -64,7 +64,7 @@ std::string Kernel::present(std::string str_target) {
 // main randomization function
 
 void Kernel::randomize() {
-	randomizeItems(arr_unpackedData[4].content);
+	randomizeItems();
 	randomizeWeapons(arr_unpackedData[5].content);
 	randomizeArmors(arr_unpackedData[6].content);
 	randomizeAccessories(arr_unpackedData[7].content);
@@ -220,35 +220,63 @@ std::vector<ItemRecord> Kernel::structItems(std::vector<std::string> inputData, 
 	return outputData;
 }
 
-void Kernel::randomizeItems(std::string& str_originData) {
+void Kernel::randomizeItems() {
   // TODO: add arguments provided by Qt interface
 	std::vector<std::string> tempContainer;
-	unsigned short position = 0;
 	const unsigned short ROW_SIZE = 56;
 	std::string str_outputData;
-	
-	while(position < str_originData.size() ) {
-		tempContainer.push_back(str_originData.substr(position, ROW_SIZE) );
-		position += ROW_SIZE;
-	}
-	
-	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
-	
-	std::cout << "\t" << tempContainer.size() << " items' data included" << std::endl;
-	
-	for(unsigned short i = 0; i < tempContainer.size(); i++) {
-		str_outputData.append(tempContainer[i]);
-	}
-	
-	arr_randoDataFile[4].content = str_outputData;
-		
-	tempContainer = fftext::unpack(arr_unpackedData[11].content);
-	std::cout << "\t" << tempContainer.size() << " items descriptions included" << std::endl;
 
-	tempContainer = fftext::unpack(arr_unpackedData[19].content);
-	std::cout << "\t" << tempContainer.size() << " items names included" << std::endl;
+  std::vector<std::string> itemsName = fftext::unpack(arr_unpackedData[19].content);
+  std::vector<std::string> itemsDesc = fftext::unpack(arr_unpackedData[11].content);
+  std::vector<std::string> itemsData;
+  std::vector<ItemRecord> itemsMerged;
 	
-	std::cout << "Kernel::Items randomized successfully!" << std::endl;
+  // populate working data
+  for(unsigned int i = 0; i < arr_unpackedData[4].content.size(); i+=ROW_SIZE) {
+    itemsData.push_back(arr_unpackedData[4].content.substr(i, ROW_SIZE));
+  }
+  
+  // merge data struct
+  itemsMerged = structItems(itemsData, itemsName, itemsDesc);
+  std::cout << itemsMerged.size() << " Kernel::Items included successfully!" << std::endl;
+	
+  //
+  // merged struct testing
+  //
+  if(false) {
+    for(unsigned int i = 0; i < itemsMerged.size(); i++) {
+      std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
+            << fftext::decode(itemsMerged[i].Desc) << "\n"
+            << itemsMerged[i].Data["Unknown1"] << " | "
+            << itemsMerged[i].Data["CameraMovementId"] << " | "
+            << itemsMerged[i].Data["MenuRestriction"] << " | "
+            << itemsMerged[i].Data["TargetingFlag"] << " | " 
+            << itemsMerged[i].Data["AttackEffectId"] << " | "
+            << itemsMerged[i].Data["DamageCalculation"] << " | "
+            << itemsMerged[i].Data["PowerForDamageCalculation"] << " | "
+            << itemsMerged[i].Data["ConditionSubmenu"] << " | "
+            << itemsMerged[i].Data["StatusEffectChange"] << " | "
+            << itemsMerged[i].Data["AdditionalEffectsModifier"] << " | "
+            << itemsMerged[i].Data["StatusEffectMask"] << " | "
+            << itemsMerged[i].Data["ElementMask"] << " | "
+            << itemsMerged[i].Data["SpecialAttackFlags"] << " | " << "\n" << std::endl;
+    }
+  }
+  
+//
+// OUTDATED RANDOMIZATION METHOD
+//
+//	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
+//		
+//	for(unsigned short i = 0; i < tempContainer.size(); i++) {
+//		str_outputData.append(tempContainer[i]);
+//	}
+//	
+//	arr_randoDataFile[4].content = str_outputData;
+//
+//	std::cout << "\t" << tempContainer.size() << " items' data included" << std::endl;	
+//	std::cout << "\t" << tempContainer.size() << " items descriptions included" << std::endl;
+//	std::cout << "\t" << tempContainer.size() << " items names included" << std::endl;
 }
 
 void Kernel::randomizeWeapons(std::string& str_originData) {
