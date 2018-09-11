@@ -222,27 +222,46 @@ std::vector<ItemRecord> Kernel::structItems(std::vector<std::string> inputData, 
 
 void Kernel::randomizeItems() {
   // TODO: add arguments provided by Qt interface
-	std::vector<std::string> tempContainer;
 	const unsigned short ROW_SIZE = 56;
-	std::string str_outputData;
-
   std::vector<std::string> itemsName = fftext::unpack(arr_unpackedData[19].content);
   std::vector<std::string> itemsDesc = fftext::unpack(arr_unpackedData[11].content);
   std::vector<std::string> itemsData;
   std::vector<ItemRecord> itemsMerged;
 	
+  //
   // populate working data
   for(unsigned int i = 0; i < arr_unpackedData[4].content.size(); i+=ROW_SIZE) {
     itemsData.push_back(arr_unpackedData[4].content.substr(i, ROW_SIZE));
   }
   
+  //
   // merge data struct
   itemsMerged = structItems(itemsData, itemsName, itemsDesc);
-  std::cout << itemsMerged.size() << " Kernel::Items included successfully!" << std::endl;
-	
+  
+  //
+  // remove dummy items
+  unsigned int ix = 0;
+  while(ix < itemsMerged.size()) {
+    if(itemsMerged[ix].Name == "FF") {
+      itemsMerged.erase(itemsMerged.begin()+ix);
+    }
+    else {
+      ix++;
+    }
+  }
+
+  //
+  // announce item count
+  if(true) {
+    std::cout << itemsMerged.size() << " Kernel::Items included successfully!" << std::endl;
+	}
+
+  //
+  // quick randomization
+  std::random_shuffle(itemsMerged.begin(), itemsMerged.end() );
+  
   //
   // merged struct testing
-  //
   if(false) {
     for(unsigned int i = 0; i < itemsMerged.size(); i++) {
       std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
@@ -259,24 +278,9 @@ void Kernel::randomizeItems() {
             << itemsMerged[i].Data["AdditionalEffectsModifier"] << " | "
             << itemsMerged[i].Data["StatusEffectMask"] << " | "
             << itemsMerged[i].Data["ElementMask"] << " | "
-            << itemsMerged[i].Data["SpecialAttackFlags"] << " | " << "\n" << std::endl;
+            << itemsMerged[i].Data["SpecialAttackFlags"] << std::endl;
     }
   }
-  
-//
-// OUTDATED RANDOMIZATION METHOD
-//
-//	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
-//		
-//	for(unsigned short i = 0; i < tempContainer.size(); i++) {
-//		str_outputData.append(tempContainer[i]);
-//	}
-//	
-//	arr_randoDataFile[4].content = str_outputData;
-//
-//	std::cout << "\t" << tempContainer.size() << " items' data included" << std::endl;	
-//	std::cout << "\t" << tempContainer.size() << " items descriptions included" << std::endl;
-//	std::cout << "\t" << tempContainer.size() << " items names included" << std::endl;
 }
 
 void Kernel::randomizeWeapons(std::string& str_originData) {
