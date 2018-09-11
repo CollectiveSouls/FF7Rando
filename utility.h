@@ -249,7 +249,7 @@ namespace fftext {
 		std::vector<std::string> outputData;
 		std::string tempStorage;
     std::string headerData;         // fftext header data
-		std::string bodyData;     // fftext body data
+		std::string bodyData;           // fftext body data
 		std::string dataWindow;
 
 		// calculate header for exclusion
@@ -291,10 +291,10 @@ namespace fftext {
 
     
     // use header indices to re-include items without descriptions
-    std::string currHeaderVal;    // current header value
-    std::string prevHeaderVal;
-    unsigned int cHeaderInt;
-    unsigned int pHeaderInt;
+    std::string currHeaderVal;    // current header value hex encoded
+    std::string prevHeaderVal;    // previous header value hex encoded
+    unsigned int cHeaderInt;      // current header as int
+    unsigned int pHeaderInt;      // previous header as int
     
     for(unsigned int i = 4; i < headerData.size(); i+=4) {
         currHeaderVal = headerData.substr(i,4);
@@ -312,17 +312,18 @@ namespace fftext {
             //std::cout << "insertion at index: " << i/4 << std::endl;
         }          
     }
-   // std::cout << std::endl;
+   
+   outputData.push_back("FF");
   
-    for(unsigned int i = 0; i < outputData.size(); i++) {
-      std::cout << outputData[i] << std::endl;
-    }
+//    for(unsigned int i = 0; i < outputData.size(); i++) {
+//      std::cout << outputData[i] << std::endl;
+//    }
   
 		return outputData;
 	}
 	
 	// converts FFText to readable ASCII text
-	void decode(std::string& str_inputData) {
+	std::string decode(std::string& str_inputData) {
 		std::string ffText = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ÄÅÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûü♥°¢£↔→♪ßα  ´¨≠ÆØ∞±≤≥¥µ∂ΣΠπ⌡ªºΩæø¿¡¬√ƒ≈∆«»… ÀÃÕŒœ–—“”‘’÷◊ÿŸ⁄ ‹›ﬁﬂ■‧‚„‰ÂÊÁËÈÍÎÏÌÓÔ ÒÚÛÙıˆ˜¯˘˙˚¸˝˛ˇ       ";
 		std::string str_outputData;
 		unsigned int getChar;
@@ -334,7 +335,8 @@ namespace fftext {
 				str_outputData.append(ffText.substr(getChar,1) );
 			}
 		}
-		std::cout << str_outputData << std::endl;
+    
+    return str_outputData;
 	}
 	
 	// changes text in unpacked fftext strings to Al Bhed cipher encoding
