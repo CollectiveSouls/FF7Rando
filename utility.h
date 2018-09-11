@@ -249,7 +249,6 @@ namespace fftext {
 		std::vector<std::string> outputData;
 		std::string tempStorage;
     std::string headerData;         // fftext header data
-      std::string currHeaderVal;    // current header value
 		std::string bodyData;     // fftext body data
 		std::string dataWindow;
 
@@ -290,15 +289,34 @@ namespace fftext {
 			}
 		}
 
+    
     // use header indices to re-include items without descriptions
-    for(unsigned int i = 0; i < headerData.size(); i+=4) {
+    std::string currHeaderVal;    // current header value
+    std::string prevHeaderVal;
+    unsigned int cHeaderInt;
+    unsigned int pHeaderInt;
+    
+    for(unsigned int i = 4; i < headerData.size(); i+=4) {
         currHeaderVal = headerData.substr(i,4);
-        std::cout << i/4 << ".  " << headerData.substr(i,4) << " | ";
-        if(currHeaderVal == headerData.substr(i+4, 4)) {
-            outputData.insert(outputData.begin()+(i/4-1), "FF");
+        currHeaderVal = convert::endianSwapS(currHeaderVal);
+        cHeaderInt = std::stoi(currHeaderVal, nullptr, 16);
+        
+        prevHeaderVal = headerData.substr(i-4,4);
+        prevHeaderVal = convert::endianSwapS(prevHeaderVal);
+        pHeaderInt = std::stoi(prevHeaderVal, nullptr, 16);
+        //std::cout << cHeaderInt - pHeaderInt << std::endl;
+
+        // std::cout << i/4 << ".  " << headerData.substr(i,4) << " | ";
+        if(cHeaderInt - pHeaderInt == 0 || cHeaderInt - pHeaderInt == 1) {
+            outputData.insert(outputData.begin()+(i/4)-1, "FF");
+            //std::cout << "insertion at index: " << i/4 << std::endl;
         }          
     }
    // std::cout << std::endl;
+  
+    for(unsigned int i = 0; i < outputData.size(); i++) {
+      std::cout << outputData[i] << std::endl;
+    }
   
 		return outputData;
 	}
