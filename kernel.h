@@ -33,6 +33,7 @@ class Kernel {
 		// Kernel::methods
 		std::vector<DataFile> unpackFile(std::string& str_inputData);
 		std::vector<DataFile> separateData(std::string& str_inputData);
+    std::vector<ItemRecord> structItems(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData);
 		void randomizeItems(std::string& str_originData);
 		void randomizeWeapons(std::string& str_originData);
 		void randomizeArmors(std::string& str_originData);
@@ -169,6 +170,55 @@ std::vector<DataFile> Kernel::unpackFile(std::string& str_inputData) {
 	}
 	return arr_outputData;
 } // end Kernel::unpackFile()
+
+std::vector<ItemRecord> Kernel::structItems(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData) {
+  std::vector<ItemRecord> outputData;
+	ItemRecord itemData;
+	unsigned int tracker = 0;
+
+	for(unsigned int i = 0; i < inputData.size(); i++) {
+		for(unsigned int j = 0; j < inputData[i].size(); j+=56) {
+			tracker = 0;
+			itemData.Data["Unknown1"] = inputData[i].substr(j,16);
+			tracker += 16;
+			itemData.Data["CameraMovementId"] = inputData[i].substr(j+tracker,4);
+			tracker += 4;
+			itemData.Data["MenuRestriction"] = inputData[i].substr(j+tracker,4);
+			tracker += 4;
+			itemData.Data["TargetingFlag"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["AttackEffectId"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["DamageCalculation"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["PowerForDamageCalculation"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["ConditionSubmenu"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["StatusEffectChange"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["AdditionalEffectsModifier"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["StatusEffectMask"] = inputData[i].substr(j+tracker,8);
+			tracker += 8;
+			itemData.Data["ElementMask"] = inputData[i].substr(j+tracker,4);
+			tracker += 4;
+			itemData.Data["SpecialAttackFlags"] = inputData[i].substr(j+tracker,4);
+			itemData.Name = "";
+			itemData.Desc = "";
+		}
+    
+		outputData.push_back(itemData);
+	}
+  
+  // add in the name and description data for the items
+  for(unsigned int i = 0; i < nameData.size(); i++) {
+    outputData[i].Name = nameData[i];
+    outputData[i].Desc = descData[i];
+  }
+
+	return outputData;
+}
 
 void Kernel::randomizeItems(std::string& str_originData) {
   // TODO: add arguments provided by Qt interface
