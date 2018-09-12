@@ -113,8 +113,8 @@ File 6 - Armors
 File 7 - Accessory Data
 	.StatId1
 	.StatId2
-	.IncreaseStat1
-	.IncreaseStat2
+	.Stat1Increase
+	.Stat2Increase
 	.ElementAffinity
 	.SpecialEffect
 	.ElementMask
