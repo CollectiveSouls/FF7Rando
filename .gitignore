@@ -84,3 +84,4 @@ psximager/psxrip.h
 psximager/psxinject.h
 psximager/psxbuild.h
 psximager/psxbuild.h
+*.project
