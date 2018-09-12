@@ -37,9 +37,12 @@ class Kernel {
 		void randomizeItems();
     std::vector<ItemRecord> structWeapons(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData);
 		void randomizeWeapons();
-		void randomizeArmors(std::string& str_originData);
-		void randomizeAccessories(std::string& str_originData);
-		void randomizeMateria(std::string& str_originData);
+    std::vector<ItemRecord> structArmors(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData);
+		void randomizeArmors();
+    std::vector<ItemRecord> structAccessories(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData);
+		void randomizeAccessories();
+    std::vector<ItemRecord> structMateria(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData);
+		void randomizeMateria();
 		// old and needs refactoring
 		// void reassemble();
 }; // end class Kernel
@@ -67,9 +70,9 @@ std::string Kernel::present(std::string str_target) {
 void Kernel::randomize() {
 	randomizeItems();
 	randomizeWeapons();
-	randomizeArmors(arr_unpackedData[6].content);
-	randomizeAccessories(arr_unpackedData[7].content);
-	randomizeMateria(arr_unpackedData[8].content);
+	randomizeArmors();
+	randomizeAccessories();
+	randomizeMateria();
 } // end Kernel::randomize()
 
 
@@ -437,101 +440,344 @@ void Kernel::randomizeWeapons() {
   }
 }
 
-void Kernel::randomizeArmors(std::string& str_originData) {
-	std::vector<std::string> tempContainer;
-	unsigned short position = 0;
+
+std::vector<ItemRecord> Kernel::structArmors(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData) {
+  std::vector<ItemRecord> outputData;
+	ItemRecord itemData;
+	unsigned int tracker = 0;
+
+	for(unsigned int i = 0; i < inputData.size(); i++) {
+		for(unsigned int j = 0; j < inputData[i].size(); j+=72) {
+			tracker = 0;
+			itemData.Data["Unknown1"] = inputData[i].substr(j,2);
+			tracker += 2;
+			itemData.Data["ElementAffinity"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["Defense"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["MDefense"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["DefensePercent"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["MDefensePercent"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["StatusDefenseId"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["Unknown2"] = inputData[i].substr(j,4);
+			tracker += 4;
+			itemData.Data["MateriaSlot1"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["MateriaSlot2"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["MateriaSlot3"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["MateriaSlot4"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["MateriaSlot5"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["MateriaSlot6"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["MateriaSlot7"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["MateriaSlot8"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["MateriaGrowthModifier"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["CharacterMask"] = inputData[i].substr(j+tracker,4);
+      tracker += 4;
+			itemData.Data["ElementMask"] = inputData[i].substr(j+tracker,4);
+      tracker += 4;
+			itemData.Data["Unknown3"] = inputData[i].substr(j+tracker,4);
+      tracker += 4;
+			itemData.Data["StatId1"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["StatId2"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["StatId3"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["StatId4"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["Stat1Increase"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["Stat2Increase"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["Stat3Increase"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["Stat4Increase"] = inputData[i].substr(j+tracker,2);
+      tracker += 2;
+			itemData.Data["MenuRestriction"] = inputData[i].substr(j+tracker,4);
+      tracker += 4;
+			itemData.Data["Unknown4"] = inputData[i].substr(j+tracker,4);
+			itemData.Name = "";
+			itemData.Desc = "";
+		}
+		outputData.push_back(itemData);
+	}
+  
+  //
+  // add in the name and description data for the items
+  for(unsigned int i = 0; i < outputData.size(); i++) {
+    outputData[i].Name = nameData[i];
+    outputData[i].Desc = descData[i];
+  }
+	return outputData;
+}
+
+void Kernel::randomizeArmors() {
+  //
+  // TODO: add arguments provided by Qt interface
 	const unsigned short ROW_SIZE = 72;
-	std::string str_outputData;
+  std::vector<std::string> itemsName = fftext::unpack(arr_unpackedData[21].content);
+  std::vector<std::string> itemsDesc = fftext::unpack(arr_unpackedData[13].content);
+  std::vector<std::string> itemsData;
+  std::vector<ItemRecord> itemsMerged;
 	
-	while(position < str_originData.size() ) {
-		tempContainer.push_back(str_originData.substr(position, ROW_SIZE) );
-		position += ROW_SIZE;
+  //
+  // populate working data
+  for(unsigned int i = 0; i < arr_unpackedData[6].content.size(); i+=ROW_SIZE) {
+    itemsData.push_back(arr_unpackedData[6].content.substr(i, ROW_SIZE));
+  }
+  
+  //
+  // merge data struct
+  itemsMerged = structArmors(itemsData, itemsName, itemsDesc);
+  
+  //
+  // remove dummy items
+  unsigned int ix = 0;
+  while(ix < itemsMerged.size()) {
+    if(itemsMerged[ix].Name == "FF") {
+      itemsMerged.erase(itemsMerged.begin()+ix);
+    }
+    else {
+      ix++;
+    }
+  }
+
+  //
+  // announce item count
+  if(true) {
+    std::cout << itemsMerged.size() << " Kernel::Armors included successfully!" << std::endl;
 	}
-	std::cout << "\t" << tempContainer.size() << " armors' data included" << std::endl;
-	
-	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
-	
-	for(unsigned short i = 0; i < tempContainer.size(); i++) {
-		str_outputData.append(tempContainer[i]);
-	}
-	
-	arr_randoDataFile[6].content = str_outputData;
 
-	tempContainer = fftext::unpack(arr_unpackedData[13].content);
-	std::cout << "\t" << tempContainer.size() << " armor descriptions included" << std::endl;
-
-	tempContainer = fftext::unpack(arr_unpackedData[21].content);
-	std::cout << "\t" << tempContainer.size() << " armor names included" << std::endl;
-
-	std::cout << "Kernel::Armors randomized successfully!" << std::endl;
+  //
+  // quick randomization
+//  std::random_shuffle(itemsMerged.begin(), itemsMerged.end() );
+  
+  //
+  // merged struct testing
+  if(false) {
+    for(unsigned int i = 0; i < itemsMerged.size(); i++) {
+      std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
+        << fftext::decode(itemsMerged[i].Desc) << std::endl;
+        for(auto it = itemsMerged[i].Data.begin(); it != itemsMerged[i].Data.end(); it++) {
+          std::cout << it->second << " | ";
+        }
+        std::cout << std::endl;
+    }
+  }
 }
 
-void Kernel::randomizeAccessories(std::string& str_originData) {
-	std::vector<std::string> tempContainer;
-	unsigned short position = 0;
+std::vector<ItemRecord> Kernel::structAccessories(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData) {
+  std::vector<ItemRecord> outputData;
+	ItemRecord itemData;
+	unsigned int tracker = 0;
+
+	for(unsigned int i = 0; i < inputData.size(); i++) {
+		for(unsigned int j = 0; j < inputData[i].size(); j+=32) {
+			tracker = 0;
+			itemData.Data["StatId1"] = inputData[i].substr(j,2);
+			tracker += 2;
+			itemData.Data["StatId2"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["Stat1Increase"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["Stat2Increase"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["ElementAffinity"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["SpecialEffect"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["ElementMask"] = inputData[i].substr(j+tracker,4);
+			tracker += 4;
+			itemData.Data["StatusMask"] = inputData[i].substr(j,8);
+			tracker += 8;
+			itemData.Data["CharacterMask"] = inputData[i].substr(j+tracker,4);
+      tracker += 4;
+			itemData.Data["MenuRestriction"] = inputData[i].substr(j+tracker,4);
+			itemData.Name = "";
+			itemData.Desc = "";
+		}
+		outputData.push_back(itemData);
+	}
+  
+  //
+  // add in the name and description data for the items
+  for(unsigned int i = 0; i < outputData.size(); i++) {
+    outputData[i].Name = nameData[i];
+    outputData[i].Desc = descData[i];
+  }
+	return outputData;
+}
+
+void Kernel::randomizeAccessories() {
+  //
+  // TODO: add arguments provided by Qt interface
 	const unsigned short ROW_SIZE = 32;
-	std::string str_outputData;
+  std::vector<std::string> itemsName = fftext::unpack(arr_unpackedData[22].content);
+  std::vector<std::string> itemsDesc = fftext::unpack(arr_unpackedData[14].content);
+  std::vector<std::string> itemsData;
+  std::vector<ItemRecord> itemsMerged;
 	
-	while(position < str_originData.size() ) {
-		tempContainer.push_back(str_originData.substr(position, ROW_SIZE) );
-		position += ROW_SIZE;
+  //
+  // populate working data
+  for(unsigned int i = 0; i < arr_unpackedData[7].content.size(); i+=ROW_SIZE) {
+    itemsData.push_back(arr_unpackedData[7].content.substr(i, ROW_SIZE));
+  }
+  
+  //
+  // merge data struct
+  itemsMerged = structAccessories(itemsData, itemsName, itemsDesc);
+  
+  //
+  // remove dummy items
+  unsigned int ix = 0;
+  while(ix < itemsMerged.size()) {
+    if(itemsMerged[ix].Name == "FF") {
+      itemsMerged.erase(itemsMerged.begin()+ix);
+    }
+    else {
+      ix++;
+    }
+  }
+
+  //
+  // announce item count
+  if(true) {
+    std::cout << itemsMerged.size() << " Kernel::Accessories included successfully!" << std::endl;
 	}
-	std::cout << "\t" << tempContainer.size() << " accessories' data included" << std::endl;
-		
-	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
-	
-	for(unsigned short i = 0; i < tempContainer.size(); i++) {
-		str_outputData.append(tempContainer[i]);
-	}
-	
-	arr_randoDataFile[7].content = str_outputData;
 
-	tempContainer = fftext::unpack(arr_unpackedData[14].content);
-	std::cout << "\t" << tempContainer.size() << " accessory descriptions included" << std::endl;
-
-	tempContainer = fftext::unpack(arr_unpackedData[22].content);
-	std::cout << "\t" << tempContainer.size() << " accessory names included" << std::endl;
-
-	std::cout << "Kernel::Accessories randomized successfully!" << std::endl;
+  //
+  // quick randomization
+//  std::random_shuffle(itemsMerged.begin(), itemsMerged.end() );
+  
+  //
+  // merged struct testing
+  if(false) {
+    for(unsigned int i = 0; i < itemsMerged.size(); i++) {
+      std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
+        << fftext::decode(itemsMerged[i].Desc) << std::endl;
+        for(auto it = itemsMerged[i].Data.begin(); it != itemsMerged[i].Data.end(); it++) {
+          std::cout << it->second << " | ";
+        }
+        std::cout << std::endl;
+    }
+  }
 }
 
-void Kernel::randomizeMateria(std::string& str_originData) {
-	std::vector<std::string> tempContainer;
-	unsigned short position = 0;
-	const unsigned short ROW_SIZE = 40	;
-	std::string str_outputData;
-		
-	while(position < str_originData.size() ) {
-		tempContainer.push_back(str_originData.substr(position, ROW_SIZE) );
-		position += ROW_SIZE;
+std::vector<ItemRecord> Kernel::structMateria(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData) {
+  std::vector<ItemRecord> outputData;
+	ItemRecord itemData;
+	unsigned int tracker = 0;
+
+	for(unsigned int i = 0; i < inputData.size(); i++) {
+		for(unsigned int j = 0; j < inputData[i].size(); j+=40) {
+			tracker = 0;
+			itemData.Data["APReq1"] = inputData[i].substr(j,4);
+			tracker += 4;
+			itemData.Data["APReq2"] = inputData[i].substr(j+tracker,4);
+			tracker += 4;
+			itemData.Data["APReq3"] = inputData[i].substr(j+tracker,4);
+			tracker += 4;
+			itemData.Data["APReq4"] = inputData[i].substr(j+tracker,4);
+			tracker += 4;
+			itemData.Data["EffectValue"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["StatusMask"] = inputData[i].substr(j+tracker,6);
+			tracker += 6;
+			itemData.Data["ElementID"] = inputData[i].substr(j+tracker,2);
+			tracker += 2;
+			itemData.Data["MateriaType"] = inputData[i].substr(j,2);
+			tracker += 2;
+			itemData.Data["StrModifier"] = inputData[i].substr(j,2);
+			tracker += 2;
+			itemData.Data["VitModifier"] = inputData[i].substr(j,2);
+			tracker += 2;
+			itemData.Data["MagModifier"] = inputData[i].substr(j,2);
+			tracker += 2;
+			itemData.Data["SprModifier"] = inputData[i].substr(j,2);
+			tracker += 2;
+			itemData.Data["DexModifier"] = inputData[i].substr(j,2);
+			tracker += 2;
+			itemData.Data["LukModifier"] = inputData[i].substr(j,2);
+			itemData.Name = "";
+			itemData.Desc = "";
+		}
+		outputData.push_back(itemData);
 	}
   
-	std::cout << "\t" << tempContainer.size() << " materia's data included" << std::endl;
-	
-	std::random_shuffle(tempContainer.begin(), tempContainer.end() );
-	
-	for(unsigned short i = 0; i < tempContainer.size(); i++) {
-		str_outputData.append(tempContainer[i]);
-	}
-	
-	arr_randoDataFile[8].content = str_outputData;
+  //
+  // add in the name and description data for the items
+  for(unsigned int i = 0; i < outputData.size(); i++) {
+    outputData[i].Name = nameData[i];
+    outputData[i].Desc = descData[i];
+  }
+	return outputData;
+}
 
-	tempContainer = fftext::unpack(arr_unpackedData[15].content);
- 	std::cout << "\t" << tempContainer.size() << " materia descriptions included" << std::endl;
+void Kernel::randomizeMateria() {
+  //
+  // TODO: add arguments provided by Qt interface
+	const unsigned short ROW_SIZE = 40;
+  std::vector<std::string> itemsName = fftext::unpack(arr_unpackedData[23].content);
+  std::vector<std::string> itemsDesc = fftext::unpack(arr_unpackedData[15].content);
+  std::vector<std::string> itemsData;
+  std::vector<ItemRecord> itemsMerged;
+	
+  //
+  // populate working data
+  for(unsigned int i = 0; i < arr_unpackedData[8].content.size(); i+=ROW_SIZE) {
+    itemsData.push_back(arr_unpackedData[8].content.substr(i, ROW_SIZE));
+  }
   
- 	tempContainer = fftext::unpack(arr_unpackedData[23].content);
-	std::cout << "\t" << tempContainer.size() << " materia names included" << std::endl;
+  //
+  // merge data struct
+  itemsMerged = structMateria(itemsData, itemsName, itemsDesc);
+  
+  //
+  // remove dummy items
+  unsigned int ix = 0;
+  while(ix < itemsMerged.size()) {
+    if(itemsMerged[ix].Name == "FF") {
+      itemsMerged.erase(itemsMerged.begin()+ix);
+    }
+    else {
+      ix++;
+    }
+  }
 
-//	std::string recombined;
-//	for(unsigned int i = 0; i < tempContainer.size(); i++) {
-//		std::cout << tempContainer[i] << std::endl;
-//		fftext::decode(tempContainer[i]);
-//		recombined.append(tempContainer[i]);
-//	}
-//	std::string tempString = fftext::relzs(recombined);
-//	std::cout << tempString << std::endl;
+  //
+  // announce item count
+  if(true) {
+    std::cout << itemsMerged.size() << " Kernel::Accessories included successfully!" << std::endl;
+	}
 
-	std::cout << "Kernel::Materia randomized successfully!" << std::endl;
+  //
+  // quick randomization
+//  std::random_shuffle(itemsMerged.begin(), itemsMerged.end() );
+  
+  //
+  // merged struct testing
+  if(false) {
+    for(unsigned int i = 0; i < itemsMerged.size(); i++) {
+      std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
+        << fftext::decode(itemsMerged[i].Desc) << std::endl;
+        for(auto it = itemsMerged[i].Data.begin(); it != itemsMerged[i].Data.end(); it++) {
+          std::cout << it->second << " | ";
+        }
+        std::cout << std::endl;
+    }
+  }
 }
 
 /*
