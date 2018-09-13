@@ -5,17 +5,18 @@
 #define KERNEL_H_
 
 // std libs
-#include <iostream>		// std::cout
-#include <fstream>		// std::fstream, std::ifstream, std::ofstream
+#include <iostream>		  // std::cout
+#include <fstream>		  // std::fstream, std::ifstream, std::ofstream
 #include <iomanip>		
-#include <sstream>		// std::stringstream
-#include <string>		// std::string
-#include <vector>		// std::vector
+#include <utility>      // std::pair
+#include <sstream>		  // std::stringstream
+#include <string>		    // std::string
+#include <vector>		    // std::vector
 #include <cstdlib>      // std::rand, std::srand
 #include <algorithm>    // std::random_shuffle
 #include <ctime>        // std::time
 // custom libs
-#include <utility.h>
+#include <utility.h>    // data conversion and structuring
 
 class Kernel {
 	public:
@@ -25,23 +26,138 @@ class Kernel {
 		void randomize();
 		std::string present(std::string str_target);
 	private:
-		// Kernel::variables
+    // Kernel::variables
 		std::string str_target;
 		std::string str_rawData;
 		std::vector<DataFile> arr_unpackedData;
 		std::vector<DataFile> arr_randoDataFile;
+    const std::vector<std::pair<std::string, unsigned int> > ITEMS_STRUCT {
+      {"Unknown1", 16},
+      {"CameraMovementId", 4},
+      {"MenuRestriction", 4},
+      {"TargetingFlag", 2},
+      {"AttackEffectId", 2},
+      {"DamageCalculation", 2},
+      {"PowerForDamageCalculation", 2},
+      {"ConditionSubmenu", 2},
+      {"StatusEffectChange", 2},
+      {"AdditionalEffectsModifier", 2},
+      {"StatusEffectMask", 8},
+      {"ElementMask", 4},
+      {"SpecialAttackFlags", 4}
+    };
+    const std::vector<std::pair<std::string, unsigned int> > WEAPON_STRUCT = {
+      {"TargetingFlag", 2},
+      {"AttackEffectId", 2},
+      {"DamageCalculation", 2},
+      {"Unknown1", 2},
+      {"PowerForDamageCalculation", 2},
+      {"StatusAttack", 2},
+      {"MateriaGrowthModifier", 2},
+      {"CriticalHitPercent", 2},
+      {"WeaponHitPercent", 2},
+      {"ModelAlignment", 2},
+      {"HighSoundId", 2},
+      {"CameraMovementId", 4},
+      {"CharacterMask", 4},
+      {"ElementMask", 4},
+      {"Unknown2", 4},
+      {"StatId1", 2},
+      {"StatId2", 2},
+      {"StatId3", 2},
+      {"StatId4", 2},
+      {"Stat1Increase", 2},
+      {"Stat2Increase", 2},
+      {"Stat3Increase", 2},
+      {"Stat4Increase", 2},
+      {"MateriaSlot1", 2},
+      {"MateriaSlot2", 2},
+      {"MateriaSlot3", 2},
+      {"MateriaSlot4", 2},
+      {"MateriaSlot5", 2},
+      {"MateriaSlot6", 2},
+      {"MateriaSlot7", 2},
+      {"MateriaSlot8", 2},
+      {"SoundIdHitNormal", 2},
+      {"SoundIdHitCritital", 2},
+      {"SoundIdHitMissed", 2},
+      {"SoundIdImpact", 2},
+      {"SpecialAttackFlags", 4},
+      {"MenuRestriction", 4}
+    };
+    const std::vector<std::pair<std::string, unsigned int> > ARMOR_STRUCT = {
+      {"Unknown1", 2},
+      {"ElementAffinity", 2},
+      {"Defense", 2},
+      {"MDefense", 2},
+      {"DefensePercent", 2},
+      {"MDefensePercent", 2},
+      {"StatusDefenseId", 2},
+      {"Unknown2", 4},
+      {"MateriaSlot1", 2},
+      {"MateriaSlot2", 2},
+      {"MateriaSlot3", 2},
+      {"MateriaSlot4", 2},
+      {"MateriaSlot5", 2},
+      {"MateriaSlot6", 2},
+      {"MateriaSlot7", 2},
+      {"MateriaSlot8", 2},
+      {"MateriaGrowthModifier", 2},
+      {"CharacterMask", 4},
+      {"ElementMask", 4},
+      {"Unknown3", 4},
+      {"StatId1", 2},
+      {"StatId2", 2},
+      {"StatId3", 2},
+      {"StatId4", 2},
+      {"Stat1Increase", 2},
+      {"Stat2Increase", 2},
+      {"Stat3Increase", 2},
+      {"Stat4Increase", 2},
+      {"MenuRestriction", 4},
+      {"Unknown4", 4}
+    };
+    const std::vector<std::pair<std::string, unsigned int> > ACCESSORY_STRUCT = {
+      {"StatId1", 2},
+      {"StatId2", 2},
+      {"Stat1Increase", 2},
+      {"Stat2Increase", 2},
+      {"ElementAffinity", 2},
+      {"SpecialEffect", 2},
+      {"ElementMask", 4},
+      {"StatusMask", 8},
+      {"CharacterMask", 4},
+      {"MenuRestriction", 4}
+    };
+    const std::vector<std::pair<std::string, unsigned int> > MATERIA_STRUCT = {
+      {"APReq1", 4},
+      {"APReq2", 4},
+      {"APReq3", 4},
+      {"APReq4", 4},
+      {"EffectValue", 2},
+      {"StatusMask", 6},
+      {"ElementID", 2},
+      {"MateriaType", 2},
+      {"StrModifier", 2},
+      {"VitModifier", 2},
+      {"MagModifier", 2},
+      {"SprModifier", 2},
+      {"DexModifier", 2},
+      {"LukModifier", 2}
+    };
 		// Kernel::methods
 		std::vector<DataFile> unpackFile(std::string& str_inputData);
 		std::vector<DataFile> separateData(std::string& str_inputData);
-    std::vector<ItemRecord> structItems(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData);
+    std::vector<ItemRecord> structSection (
+      std::vector<std::string> inputData, 
+      std::vector<std::string> nameData, 
+      std::vector<std::string> descData,
+      const std::vector<std::pair<std::string, unsigned int>>& dataStruct
+    );
 		void randomizeItems();
-    std::vector<ItemRecord> structWeapons(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData);
 		void randomizeWeapons();
-    std::vector<ItemRecord> structArmors(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData);
 		void randomizeArmors();
-    std::vector<ItemRecord> structAccessories(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData);
 		void randomizeAccessories();
-    std::vector<ItemRecord> structMateria(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData);
 		void randomizeMateria();
 		// old and needs refactoring
 		// void reassemble();
@@ -57,7 +173,9 @@ Kernel::Kernel(std::string str_target) {
 
 	arr_unpackedData = unpackFile(str_rawData);
 	arr_randoDataFile = arr_unpackedData; // seeding the indicies
-	
+  
+  //
+  // NOTE: likely going to be called individually, this is mainly set-up for mass testing purposes
 	randomize();
 } // end Kernel::Kernel()
 
@@ -183,55 +301,31 @@ std::vector<DataFile> Kernel::unpackFile(std::string& str_inputData) {
 	return arr_outputData;
 } // end Kernel::unpackFile()
 
-std::vector<ItemRecord> Kernel::structItems(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData) {
-  std::vector<ItemRecord> outputData;
-	ItemRecord itemData;
-	unsigned int tracker = 0;
 
+std::vector<ItemRecord> Kernel::structSection (
+	std::vector<std::string> inputData, 
+	std::vector<std::string> nameData, 
+	std::vector<std::string> descData,
+	const std::vector<std::pair<std::string, unsigned int>>& dataStruct
+) {
+	std::vector<ItemRecord> outputData;
+	ItemRecord mergedItemData;
+	unsigned int itemStart = 0;
+ 
 	for(unsigned int i = 0; i < inputData.size(); i++) {
-		for(unsigned int j = 0; j < inputData[i].size(); j+=56) {
-			tracker = 0;
-			itemData.Data["Unknown1"] = inputData[i].substr(j,16);
-			tracker += 16;
-			itemData.Data["CameraMovementId"] = inputData[i].substr(j+tracker,4);
-			tracker += 4;
-			itemData.Data["MenuRestriction"] = inputData[i].substr(j+tracker,4);
-			tracker += 4;
-			itemData.Data["TargetingFlag"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["AttackEffectId"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["DamageCalculation"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["PowerForDamageCalculation"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["ConditionSubmenu"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["StatusEffectChange"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["AdditionalEffectsModifier"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["StatusEffectMask"] = inputData[i].substr(j+tracker,8);
-			tracker += 8;
-			itemData.Data["ElementMask"] = inputData[i].substr(j+tracker,4);
-			tracker += 4;
-			itemData.Data["SpecialAttackFlags"] = inputData[i].substr(j+tracker,4);
-			itemData.Name = "";
-			itemData.Desc = "";
+		//
+		// populate dataStruct.Data
+		itemStart = 0;    
+		for(unsigned int j = 0; j < dataStruct.size(); j++) {
+ 			mergedItemData.Data[dataStruct[j].first] = inputData[i].substr(itemStart,dataStruct[j].second);
+			itemStart = itemStart + dataStruct[j].second;
 		}
-    
-		outputData.push_back(itemData);
+		mergedItemData.Name = nameData[i];
+		mergedItemData.Desc = descData[i];
+		outputData.push_back(mergedItemData);
 	}
-  
-  //
-  // add in the name and description data for the items
-  for(unsigned int i = 0; i < outputData.size(); i++) {
-    outputData[i].Name = nameData[i];
-    outputData[i].Desc = descData[i];
-  }
-
 	return outputData;
-}
+} //end structSection()
 
 void Kernel::randomizeItems() {
   //
@@ -250,7 +344,8 @@ void Kernel::randomizeItems() {
   
   //
   // merge data struct
-  itemsMerged = structItems(itemsData, itemsName, itemsDesc);
+  // itemsMerged = structItems(itemsData, itemsName, itemsDesc);
+  itemsMerged = structSection(itemsData, itemsName, itemsDesc, ITEMS_STRUCT);
   
   //
   // remove dummy items
@@ -289,102 +384,6 @@ void Kernel::randomizeItems() {
   }
 }
 
-std::vector<ItemRecord> Kernel::structWeapons(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData) {
-  std::vector<ItemRecord> outputData;
-	ItemRecord itemData;
-	unsigned int tracker = 0;
-
-	for(unsigned int i = 0; i < inputData.size(); i++) {
-		for(unsigned int j = 0; j < inputData[i].size(); j+=88) {
-			tracker = 0;
-			itemData.Data["TargetingFlag"] = inputData[i].substr(j,2);
-			tracker += 2;
-			itemData.Data["AttackEffectId"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["DamageCalculation"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["Unknown1"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["PowerForDamageCalculation"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["StatusAttack"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["MateriaGrowthModifier"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["CriticalHitPercent"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["WeaponHitPercent"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["ModelAlignment"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["HighSoundId"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["CameraMovementId"] = inputData[i].substr(j+tracker,4);
-			tracker += 4;
-			itemData.Data["CharacterMask"] = inputData[i].substr(j+tracker,4);
-      tracker += 4;
-			itemData.Data["ElementMask"] = inputData[i].substr(j+tracker,4);
-      tracker += 4;
-			itemData.Data["Unknown2"] = inputData[i].substr(j+tracker,4);
-      tracker += 4;
-			itemData.Data["StatId1"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["StatId2"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["StatId3"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["StatId4"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["Stat1Increase"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["Stat2Increase"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["Stat3Increase"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["Stat4Increase"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot1"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot2"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot3"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot4"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot5"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot6"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot7"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot8"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["SoundIdHitNormal"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["SoundIdHitCritital"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["SoundIdHitMissed"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["SoundIdImpact"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["SpecialAttackFlags"] = inputData[i].substr(j+tracker,4);
-      tracker += 4;
-			itemData.Data["MenuRestriction"] = inputData[i].substr(j+tracker,4);
-			itemData.Name = "";
-			itemData.Desc = "";
-		}
-		outputData.push_back(itemData);
-	}
-  
-  //
-  // add in the name and description data for the items
-  for(unsigned int i = 0; i < outputData.size(); i++) {
-    outputData[i].Name = nameData[i];
-    outputData[i].Desc = descData[i];
-  }
-	return outputData;
-}
-
 void Kernel::randomizeWeapons() {
   //
   // TODO: add arguments provided by Qt interface
@@ -402,8 +401,8 @@ void Kernel::randomizeWeapons() {
   
   //
   // merge data struct
-  itemsMerged = structWeapons(itemsData, itemsName, itemsDesc);
-  
+  itemsMerged = structSection(itemsData, itemsName, itemsDesc, WEAPON_STRUCT);
+
   //
   // remove dummy items
   unsigned int ix = 0;
@@ -440,89 +439,6 @@ void Kernel::randomizeWeapons() {
   }
 }
 
-
-std::vector<ItemRecord> Kernel::structArmors(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData) {
-  std::vector<ItemRecord> outputData;
-	ItemRecord itemData;
-	unsigned int tracker = 0;
-
-	for(unsigned int i = 0; i < inputData.size(); i++) {
-		for(unsigned int j = 0; j < inputData[i].size(); j+=72) {
-			tracker = 0;
-			itemData.Data["Unknown1"] = inputData[i].substr(j,2);
-			tracker += 2;
-			itemData.Data["ElementAffinity"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["Defense"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["MDefense"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["DefensePercent"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["MDefensePercent"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["StatusDefenseId"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["Unknown2"] = inputData[i].substr(j,4);
-			tracker += 4;
-			itemData.Data["MateriaSlot1"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot2"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot3"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot4"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot5"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot6"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot7"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaSlot8"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MateriaGrowthModifier"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["CharacterMask"] = inputData[i].substr(j+tracker,4);
-      tracker += 4;
-			itemData.Data["ElementMask"] = inputData[i].substr(j+tracker,4);
-      tracker += 4;
-			itemData.Data["Unknown3"] = inputData[i].substr(j+tracker,4);
-      tracker += 4;
-			itemData.Data["StatId1"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["StatId2"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["StatId3"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["StatId4"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["Stat1Increase"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["Stat2Increase"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["Stat3Increase"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["Stat4Increase"] = inputData[i].substr(j+tracker,2);
-      tracker += 2;
-			itemData.Data["MenuRestriction"] = inputData[i].substr(j+tracker,4);
-      tracker += 4;
-			itemData.Data["Unknown4"] = inputData[i].substr(j+tracker,4);
-			itemData.Name = "";
-			itemData.Desc = "";
-		}
-		outputData.push_back(itemData);
-	}
-  
-  //
-  // add in the name and description data for the items
-  for(unsigned int i = 0; i < outputData.size(); i++) {
-    outputData[i].Name = nameData[i];
-    outputData[i].Desc = descData[i];
-  }
-	return outputData;
-}
-
 void Kernel::randomizeArmors() {
   //
   // TODO: add arguments provided by Qt interface
@@ -540,8 +456,8 @@ void Kernel::randomizeArmors() {
   
   //
   // merge data struct
-  itemsMerged = structArmors(itemsData, itemsName, itemsDesc);
-  
+  itemsMerged = structSection(itemsData, itemsName, itemsDesc, ARMOR_STRUCT);
+
   //
   // remove dummy items
   unsigned int ix = 0;
@@ -578,48 +494,6 @@ void Kernel::randomizeArmors() {
   }
 }
 
-std::vector<ItemRecord> Kernel::structAccessories(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData) {
-  std::vector<ItemRecord> outputData;
-	ItemRecord itemData;
-	unsigned int tracker = 0;
-
-	for(unsigned int i = 0; i < inputData.size(); i++) {
-		for(unsigned int j = 0; j < inputData[i].size(); j+=32) {
-			tracker = 0;
-			itemData.Data["StatId1"] = inputData[i].substr(j,2);
-			tracker += 2;
-			itemData.Data["StatId2"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["Stat1Increase"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["Stat2Increase"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["ElementAffinity"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["SpecialEffect"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["ElementMask"] = inputData[i].substr(j+tracker,4);
-			tracker += 4;
-			itemData.Data["StatusMask"] = inputData[i].substr(j,8);
-			tracker += 8;
-			itemData.Data["CharacterMask"] = inputData[i].substr(j+tracker,4);
-      tracker += 4;
-			itemData.Data["MenuRestriction"] = inputData[i].substr(j+tracker,4);
-			itemData.Name = "";
-			itemData.Desc = "";
-		}
-		outputData.push_back(itemData);
-	}
-  
-  //
-  // add in the name and description data for the items
-  for(unsigned int i = 0; i < outputData.size(); i++) {
-    outputData[i].Name = nameData[i];
-    outputData[i].Desc = descData[i];
-  }
-	return outputData;
-}
-
 void Kernel::randomizeAccessories() {
   //
   // TODO: add arguments provided by Qt interface
@@ -637,7 +511,7 @@ void Kernel::randomizeAccessories() {
   
   //
   // merge data struct
-  itemsMerged = structAccessories(itemsData, itemsName, itemsDesc);
+  itemsMerged = structSection(itemsData, itemsName, itemsDesc, ACCESSORY_STRUCT);
   
   //
   // remove dummy items
@@ -675,56 +549,6 @@ void Kernel::randomizeAccessories() {
   }
 }
 
-std::vector<ItemRecord> Kernel::structMateria(std::vector<std::string> inputData, std::vector<std::string> nameData, std::vector<std::string> descData) {
-  std::vector<ItemRecord> outputData;
-	ItemRecord itemData;
-	unsigned int tracker = 0;
-
-	for(unsigned int i = 0; i < inputData.size(); i++) {
-		for(unsigned int j = 0; j < inputData[i].size(); j+=40) {
-			tracker = 0;
-			itemData.Data["APReq1"] = inputData[i].substr(j,4);
-			tracker += 4;
-			itemData.Data["APReq2"] = inputData[i].substr(j+tracker,4);
-			tracker += 4;
-			itemData.Data["APReq3"] = inputData[i].substr(j+tracker,4);
-			tracker += 4;
-			itemData.Data["APReq4"] = inputData[i].substr(j+tracker,4);
-			tracker += 4;
-			itemData.Data["EffectValue"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["StatusMask"] = inputData[i].substr(j+tracker,6);
-			tracker += 6;
-			itemData.Data["ElementID"] = inputData[i].substr(j+tracker,2);
-			tracker += 2;
-			itemData.Data["MateriaType"] = inputData[i].substr(j,2);
-			tracker += 2;
-			itemData.Data["StrModifier"] = inputData[i].substr(j,2);
-			tracker += 2;
-			itemData.Data["VitModifier"] = inputData[i].substr(j,2);
-			tracker += 2;
-			itemData.Data["MagModifier"] = inputData[i].substr(j,2);
-			tracker += 2;
-			itemData.Data["SprModifier"] = inputData[i].substr(j,2);
-			tracker += 2;
-			itemData.Data["DexModifier"] = inputData[i].substr(j,2);
-			tracker += 2;
-			itemData.Data["LukModifier"] = inputData[i].substr(j,2);
-			itemData.Name = "";
-			itemData.Desc = "";
-		}
-		outputData.push_back(itemData);
-	}
-  
-  //
-  // add in the name and description data for the items
-  for(unsigned int i = 0; i < outputData.size(); i++) {
-    outputData[i].Name = nameData[i];
-    outputData[i].Desc = descData[i];
-  }
-	return outputData;
-}
-
 void Kernel::randomizeMateria() {
   //
   // TODO: add arguments provided by Qt interface
@@ -742,7 +566,7 @@ void Kernel::randomizeMateria() {
   
   //
   // merge data struct
-  itemsMerged = structMateria(itemsData, itemsName, itemsDesc);
+  itemsMerged = structSection(itemsData, itemsName, itemsDesc, MATERIA_STRUCT);
   
   //
   // remove dummy items
