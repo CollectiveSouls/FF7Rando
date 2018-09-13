@@ -1,6 +1,6 @@
 // all values are decimal equivilents of fftext
 
-AB		EN		AB		EN\x
+AB		EN		AB\x	EN\x
 A		E		34		38
 B		P		35		49
 C		S		36		52
