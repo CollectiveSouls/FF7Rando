@@ -3,7 +3,7 @@ Decriptions start at an index and run until the next specified index or end of f
 Descriptions themselves are applied to the appropriate item by order they appear in both the data file and index of the 2-byte dindex in the description file. Which means there's one index per item in the appropriate table of the initial 9 tables within kernel.
 
 
-Example indexing of Weapon Names & Descriptions:
+Here's an example of the indexing for the Weapon Descriptions table and the values which they point to, with names for clarity.
 --------------------------------------------
 00 01 		// Buster Sword - Initial equiping
 10 01 		// Mythril Saber
