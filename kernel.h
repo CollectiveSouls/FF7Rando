@@ -23,7 +23,7 @@ class Kernel {
 		// Kernel::methods
 		Kernel();
 		Kernel(std::string str_target);
-		void randomize();
+		void randomize(std::vector<ItemRecord> itemsMerged);
 		std::string present(std::string str_target);
 	private:
     // Kernel::variables
@@ -149,25 +149,12 @@ class Kernel {
 		// Kernel::methods
 		std::vector<DataFile> unpackFile(std::string& str_inputData);
 		std::vector<DataFile> separateData(std::string& str_inputData);
-    std::vector<ItemRecord> structSection (
-      std::vector<std::string> inputData, 
-      std::vector<std::string> nameData, 
-      std::vector<std::string> descData,
-      const std::vector<std::pair<std::string, unsigned int>>& dataStruct
-    );
 		std::vector<ItemRecord> mergeTables (
       unsigned int uiDataTableId,
       unsigned int uiDescTableId,
       unsigned int uiNameTableId,
       const std::vector<std::pair<std::string, unsigned int>>& dataStruct
     );
-    void randomizeItems();
-		void randomizeWeapons();
-		void randomizeArmors();
-		void randomizeAccessories();
-		void randomizeMateria();
-		// old and needs refactoring
-		// void reassemble();
 }; // end class Kernel
 
 Kernel::Kernel(std::string str_target) {
@@ -183,7 +170,11 @@ Kernel::Kernel(std::string str_target) {
   
   //
   // NOTE: likely going to be called individually, this is mainly set-up for mass testing purposes
-	randomize();
+	randomize(mergeTables(4, 11, 19, ITEMS_STRUCT) );
+	randomize(mergeTables(5, 12, 20, WEAPON_STRUCT) );
+	randomize(mergeTables(6, 13, 21, ARMOR_STRUCT) );
+	randomize(mergeTables(7, 14, 22, ACCESSORY_STRUCT) );
+	randomize(mergeTables(8, 15, 23, MATERIA_STRUCT) );
 } // end Kernel::Kernel()
 
 std::string Kernel::present(std::string str_target) {
@@ -192,14 +183,34 @@ std::string Kernel::present(std::string str_target) {
 } // end Kernel::present()
 // main randomization function
 
-void Kernel::randomize() {
-	randomizeItems();
-	randomizeWeapons();
-	randomizeArmors();
-	randomizeAccessories();
-	randomizeMateria();
-} // end Kernel::randomize()
+void Kernel::randomize(std::vector<ItemRecord> itemsMerged) {
+  //
+  // TODO: add arguments provided by Qt interface
 
+  //
+  // announce item count
+  if(true) {
+    std::cout << itemsMerged.size() << " items included successfully!" << std::endl;
+	}
+
+  //
+  // quick randomization
+  //  std::random_shuffle(itemsMerged.begin(), itemsMerged.end() );
+  
+  //
+  // merged struct testing
+  if(false) {
+    for(unsigned int i = 0; i < itemsMerged.size(); i++) {
+      std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
+        << fftext::decode(itemsMerged[i].Desc) << std::endl;
+        
+        for(auto it = itemsMerged[i].Data.begin(); it != itemsMerged[i].Data.end(); it++) {
+          std::cout << it->second << " | ";
+        }
+        std::cout << std::endl;
+    }
+  }
+} // end Kernel::randomize()
 
 /*
 // Begin Private Methods
@@ -245,7 +256,6 @@ std::vector<std::string> unpack(std::string& inputData) {
 	}
 	return outputData;
 }
-
 
 std::vector<DataFile> Kernel::separateData(std::string& str_inputData) {
 	std::vector<DataFile> arr_outputData;
@@ -363,182 +373,5 @@ std::vector<ItemRecord> Kernel::mergeTables (
   
 	return itemsMerged;
 } //end mergeTables()
-
-void Kernel::randomizeItems() {
-  //
-  // TODO: add arguments provided by Qt interface
-  std::vector<ItemRecord> itemsMerged;
-  
-  //
-  // merge data struct
-  itemsMerged = mergeTables(4, 11, 19, ITEMS_STRUCT);
-
-  //
-  // announce item count
-  if(true) {
-    std::cout << itemsMerged.size() << " items included successfully!" << std::endl;
-	}
-
-  //
-  // quick randomization
-  //  std::random_shuffle(itemsMerged.begin(), itemsMerged.end() );
-  
-  //
-  // merged struct testing
-  if(false) {
-    for(unsigned int i = 0; i < itemsMerged.size(); i++) {
-      std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
-        << fftext::decode(itemsMerged[i].Desc) << std::endl;
-        
-        for(auto it = itemsMerged[i].Data.begin(); it != itemsMerged[i].Data.end(); it++) {
-          std::cout << it->second << " | ";
-        }
-        std::cout << std::endl;
-    }
-  }
-}
-
-void Kernel::randomizeWeapons() {
-  //
-  // TODO: add arguments provided by Qt interface
-  std::vector<ItemRecord> itemsMerged;
-  
-  //
-  // merge data struct
-  itemsMerged = mergeTables(5, 12, 20, WEAPON_STRUCT);
-  
-  //
-  // announce item count
-  if(true) {
-    std::cout << itemsMerged.size() << " weapons included successfully!" << std::endl;
-	}
-
-  //
-  // quick randomization
-  //  std::random_shuffle(itemsMerged.begin(), itemsMerged.end() );
-  
-  //
-  // merged struct testing
-  if(false) {
-    for(unsigned int i = 0; i < itemsMerged.size(); i++) {
-      std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
-        << fftext::decode(itemsMerged[i].Desc) << std::endl;
-        for(auto it = itemsMerged[i].Data.begin(); it != itemsMerged[i].Data.end(); it++) {
-          std::cout << it->second << " | ";
-        }
-        std::cout << std::endl;
-    }
-  }
-}
-
-void Kernel::randomizeArmors() {
-  //
-  // TODO: add arguments provided by Qt interface
-	std::vector<ItemRecord> itemsMerged;
-  
-  //
-  // merge data struct
-  itemsMerged = mergeTables(6, 13, 21, ARMOR_STRUCT);
-
-  //
-  // announce item count
-  if(true) {
-    std::cout << itemsMerged.size() << " armors included successfully!" << std::endl;
-	}
-
-  //
-  // quick randomization
-  //  std::random_shuffle(itemsMerged.begin(), itemsMerged.end() );
-  
-  //
-  // merged struct testing
-  if(false) {
-    for(unsigned int i = 0; i < itemsMerged.size(); i++) {
-      std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
-        << fftext::decode(itemsMerged[i].Desc) << std::endl;
-        for(auto it = itemsMerged[i].Data.begin(); it != itemsMerged[i].Data.end(); it++) {
-          std::cout << it->second << " | ";
-        }
-        std::cout << std::endl;
-    }
-  }
-}
-
-void Kernel::randomizeAccessories() {
-  //
-  // TODO: add arguments provided by Qt interface
-  std::vector<ItemRecord> itemsMerged;
-
-  //
-  // merge data struct
-  itemsMerged = mergeTables(7, 14, 22, ACCESSORY_STRUCT);
-  
-  //
-  // announce item count
-  if(true) {
-    std::cout << itemsMerged.size() << " accessories included successfully!" << std::endl;
-	}
-
-  //
-  // quick randomization
-  //  std::random_shuffle(itemsMerged.begin(), itemsMerged.end() );
-  
-  //
-  // merged struct testing
-  if(false) {
-    for(unsigned int i = 0; i < itemsMerged.size(); i++) {
-      std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
-        << fftext::decode(itemsMerged[i].Desc) << std::endl;
-        for(auto it = itemsMerged[i].Data.begin(); it != itemsMerged[i].Data.end(); it++) {
-          std::cout << it->second << " | ";
-        }
-        std::cout << std::endl;
-    }
-  }
-}
-
-void Kernel::randomizeMateria() {
-  //
-  // TODO: add arguments provided by Qt interface
-	std::vector<ItemRecord> itemsMerged;
-  
-  //
-  // merge data struct
-  itemsMerged = mergeTables(8, 15, 23, MATERIA_STRUCT);
-
-  //
-  // announce item count
-  if(true) {
-    std::cout << itemsMerged.size() << " materia included successfully!" << std::endl;
-	}
-
-  //
-  // quick randomization
-  //  std::random_shuffle(itemsMerged.begin(), itemsMerged.end() );
-  
-  //
-  // merged struct testing
-  if(false) {
-    for(unsigned int i = 0; i < itemsMerged.size(); i++) {
-      std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
-        << fftext::decode(itemsMerged[i].Desc) << std::endl;
-        for(auto it = itemsMerged[i].Data.begin(); it != itemsMerged[i].Data.end(); it++) {
-          std::cout << it->second << " | ";
-        }
-        std::cout << std::endl;
-    }
-  }
-}
-
-/*
-void Kernel::reassemble() {
-	for(int i = arr_ffTexts.size(); i >= 0; i--) {
-		std::cout << i + 9 << std::endl;
-	}
-	for(int i = arr_dsmFileDataHex.size()-1; i >= 0; i--) {
-		std::cout << i << std::endl;
-	}
-}
-*/
 
 #endif /* KERNEL_H_ */
