@@ -12,13 +12,17 @@
 
 int main(int argc, char **argv) {
 	// TODO: Get psximager integrated.
-	
+
+  //
+  // TODO: connect & create seed concurrency with GUI
+  unsigned long seed = 4294967295;
+  
 	// TODO: verify disc images
 	// "!imgs-unpacked\\NTSC\\DISC1\\MINT\\DISKINFO.CNF"
 	// ...check first and third lines of each file.
 
 	// init kernel: handles items; and character bases and growth rates
-	Kernel kernel("!imgs-unpacked\\NTSC\\DISC1\\INIT\\KERNEL.BIN", 238567);
+	Kernel kernel("!imgs-unpacked\\NTSC\\DISC1\\INIT\\KERNEL.BIN", seed);
 
   // init Window: handles font sets and menu layouts
 	// Window window("!imgs-unpacked\\NTSC\\DISC1\\INIT\\WINDOW.BIN");
