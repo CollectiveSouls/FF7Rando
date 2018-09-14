@@ -31,7 +31,6 @@ class Kernel {
 		std::string str_target;
 		std::string str_rawData;
 		std::vector<DataFile> arr_unpackedData;
-		std::vector<DataFile> arr_randoDataFile;
     const std::vector<std::pair<std::string, unsigned int> > ITEMS_STRUCT {
       {"Unknown1", 16},
       {"CameraMovementId", 4},
@@ -171,35 +170,24 @@ Kernel::Kernel(std::string str_target, unsigned long seed) {
 	std::ifstream ifs_rawData(str_target, std::ios::binary);
 	str_rawData = convert::BytesToHexFS(ifs_rawData);
 	arr_unpackedData = unpackFile(str_rawData);
-	arr_randoDataFile = arr_unpackedData; // seeding the indicies
   
   //
   // testing area
   //
   workingTables.push_back(mergeTables(4, 11, 19, ITEMS_STRUCT) );
-//	randomize(workingTables[0], seed);
-  itemsAnnounceCount(workingTables[0], "Item" );  
-//  printTable(workingTables[0]);
-
   workingTables.push_back(mergeTables(5, 12, 20, WEAPON_STRUCT) );
-//	randomize(workingTables[1], seed);
-  itemsAnnounceCount(workingTables[1], "Weapon" );
-//  printTable(workingTables[1]);
-
   workingTables.push_back(mergeTables(6, 13, 21, ARMOR_STRUCT) );
-//	randomize(workingTables[2], seed);
-  itemsAnnounceCount(workingTables[2], "Armor" );
-//  printTable(workingTables[2]);
-
   workingTables.push_back(mergeTables(7, 14, 22, ACCESSORY_STRUCT) );
-//	randomize(workingTables[3], seed);
-  itemsAnnounceCount(workingTables[3], "Accessory" );
-//  printTable(workingTables[3]);
-
   workingTables.push_back(mergeTables(8, 15, 23, MATERIA_STRUCT) );
-//	randomize(workingTables[4], seed);
+
+  itemsAnnounceCount(workingTables[0], "Item" );  
+  itemsAnnounceCount(workingTables[1], "Weapon" );
+  itemsAnnounceCount(workingTables[2], "Armor" );
+  itemsAnnounceCount(workingTables[3], "Accessory" );
   itemsAnnounceCount(workingTables[4], "Materia" );
-//  printTable(workingTables[4]);
+
+//	randomize(workingTables[0], seed);
+//  printTable(workingTables[0]);
 } // end Kernel::Kernel()
 
 //
