@@ -13,7 +13,8 @@
 #include <string>		    // std::string
 #include <vector>		    // std::vector
 #include <cstdlib>      // std::rand, std::srand
-#include <algorithm>    // std::random_shuffle
+#include <algorithm>    // std::shuffle
+#include <random>
 #include <ctime>        // std::time
 // custom libs
 #include <utility.h>    // data conversion and structuring
@@ -22,9 +23,9 @@ class Kernel {
 	public:
 		// Kernel::methods
 		Kernel();
-		Kernel(std::string str_target);
-		void randomize(std::vector<ItemRecord> itemsMerged);
-		std::string present(std::string str_target);
+		Kernel(std::string str_target, unsigned long seed);
+		void randomize(std::vector<ItemRecord>& itemsMerged, unsigned long seed);
+		void present(std::string str_target);
 	private:
     // Kernel::variables
 		std::string str_target;
@@ -146,7 +147,8 @@ class Kernel {
       {"DexModifier", 2},
       {"LukModifier", 2}
     };
-		// Kernel::methods
+		std::vector<std::vector<ItemRecord> > workingTables;
+    // Kernel::methods
 		std::vector<DataFile> unpackFile(std::string& str_inputData);
 		std::vector<DataFile> separateData(std::string& str_inputData);
 		std::vector<ItemRecord> mergeTables (
@@ -155,61 +157,83 @@ class Kernel {
       unsigned int uiNameTableId,
       const std::vector<std::pair<std::string, unsigned int>>& dataStruct
     );
+    void itemsAnnounceCount(std::vector<ItemRecord> itemsMerged, std::string section);
+    void printTable(std::vector<ItemRecord> itemsMerged);
 }; // end class Kernel
 
-Kernel::Kernel(std::string str_target) {
-	// self-test
-	std::cout << present(str_target) << std::endl;
+Kernel::Kernel(std::string str_target, unsigned long seed) {
+	//
+  // self-test
+	present(str_target);
 	
+  //
 	// Unpack and decompress data files
 	std::ifstream ifs_rawData(str_target, std::ios::binary);
 	str_rawData = convert::BytesToHexFS(ifs_rawData);
-
 	arr_unpackedData = unpackFile(str_rawData);
 	arr_randoDataFile = arr_unpackedData; // seeding the indicies
   
   //
-  // NOTE: likely going to be called individually, this is mainly set-up for mass testing purposes
-	randomize(mergeTables(4, 11, 19, ITEMS_STRUCT) );
-	randomize(mergeTables(5, 12, 20, WEAPON_STRUCT) );
-	randomize(mergeTables(6, 13, 21, ARMOR_STRUCT) );
-	randomize(mergeTables(7, 14, 22, ACCESSORY_STRUCT) );
-	randomize(mergeTables(8, 15, 23, MATERIA_STRUCT) );
+  // testing area
+  //
+  workingTables.push_back(mergeTables(4, 11, 19, ITEMS_STRUCT) );
+//	randomize(workingTables[0], seed);
+  itemsAnnounceCount(workingTables[0], "Item" );  
+//  printTable(workingTables[0]);
+
+  workingTables.push_back(mergeTables(5, 12, 20, WEAPON_STRUCT) );
+//	randomize(workingTables[1], seed);
+  itemsAnnounceCount(workingTables[1], "Weapon" );
+//  printTable(workingTables[1]);
+
+  workingTables.push_back(mergeTables(6, 13, 21, ARMOR_STRUCT) );
+//	randomize(workingTables[2], seed);
+  itemsAnnounceCount(workingTables[2], "Armor" );
+//  printTable(workingTables[2]);
+
+  workingTables.push_back(mergeTables(7, 14, 22, ACCESSORY_STRUCT) );
+//	randomize(workingTables[3], seed);
+  itemsAnnounceCount(workingTables[3], "Accessory" );
+//  printTable(workingTables[3]);
+
+  workingTables.push_back(mergeTables(8, 15, 23, MATERIA_STRUCT) );
+//	randomize(workingTables[4], seed);
+  itemsAnnounceCount(workingTables[4], "Materia" );
+//  printTable(workingTables[4]);
 } // end Kernel::Kernel()
 
-std::string Kernel::present(std::string str_target) {
-	std::string returnString = "\nKernel is present and targeting: " + str_target;
-	return returnString;
+//
+// tests whether kernel is present and announces its target
+void Kernel::present(std::string str_target) {
+	std::cout << "\nKernel is present and targeting: " << str_target << std::endl;
 } // end Kernel::present()
-// main randomization function
 
-void Kernel::randomize(std::vector<ItemRecord> itemsMerged) {
-  //
-  // TODO: add arguments provided by Qt interface
-
-  //
-  // announce item count
+//
+// announce item count
+void Kernel::itemsAnnounceCount(std::vector<ItemRecord> itemsMerged, std::string section) {
   if(true) {
-    std::cout << itemsMerged.size() << " items included successfully!" << std::endl;
+    std::cout << "\t" << itemsMerged.size() << " " << section << " items included successfully!" << std::endl;
 	}
+}
 
-  //
-  // quick randomization
-  //  std::random_shuffle(itemsMerged.begin(), itemsMerged.end() );
-  
-  //
-  // merged struct testing
-  if(false) {
-    for(unsigned int i = 0; i < itemsMerged.size(); i++) {
-      std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
-        << fftext::decode(itemsMerged[i].Desc) << std::endl;
-        
-        for(auto it = itemsMerged[i].Data.begin(); it != itemsMerged[i].Data.end(); it++) {
-          std::cout << it->second << " | ";
-        }
-        std::cout << std::endl;
-    }
+void Kernel::printTable(std::vector<ItemRecord> itemsMerged) {
+  for(unsigned int i = 0; i < itemsMerged.size(); i++) {
+    std::cout << fftext::decode(itemsMerged[i].Name) << " | " 
+      << fftext::decode(itemsMerged[i].Desc) << std::endl;
+      
+      for(auto it = itemsMerged[i].Data.begin(); it != itemsMerged[i].Data.end(); it++) {
+        std::cout << it->second << " | ";
+      }
+      std::cout << std::endl;
   }
+}
+
+//
+// main randomization function
+void Kernel::randomize(std::vector<ItemRecord>& itemsMerged, unsigned long seed) {
+  //
+  // TODO: add in arguments provided by Qt GUI
+  shuffle(itemsMerged.begin(), itemsMerged.end(), std::default_random_engine(seed));
 } // end Kernel::randomize()
 
 /*

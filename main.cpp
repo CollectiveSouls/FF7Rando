@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
 	// ...check first and third lines of each file.
 
 	// init kernel: handles items; and character bases and growth rates
-	Kernel kernel("!imgs-unpacked\\NTSC\\DISC1\\INIT\\KERNEL.BIN");
+	Kernel kernel("!imgs-unpacked\\NTSC\\DISC1\\INIT\\KERNEL.BIN", 238567);
 
   // init Window: handles font sets and menu layouts
 	// Window window("!imgs-unpacked\\NTSC\\DISC1\\INIT\\WINDOW.BIN");
