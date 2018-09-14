@@ -1,48 +1,209 @@
 This file is meant to be documentation of how each data table contained in the kernel file will be structured after being unpacked.
 
-File 0 - Command Data
-	.InitialCursorAction
-	.TargetingFlag
-	.Unknown1
-	.CameraIdSingleTarget
-	.CameraIdMultiTarget
-File 1 - Attack Data
-	.AtkPercent
-	.ImpactEffectId
-	.TargetHurtActionId
-	.Unknown1
-	.MPCost
-	.ImpactSoundId
-	.CameraIdSingleTarget
-	.CameraIdMultiTarget
-	.TargetingFlag
-	.AttackEffectId
-	.DamageCalculation
-	.PowerForDamageCalculation
-	.RestoreType
-	.StatusEffectChange
-	.AdditionalAttackEffects
-	.AdditionalEffectsModifier
-	.StatusEffectMask
-	.ElementMask
-	.SpecialAttackFlags
-File 2 - Battle & Growth Data [Variable Sizes]
-File 3 - Initialization Data [Variable Sizes]
-File 4 - Item Data
-	.Unknown1
-	.CameraMovementId
-	.MenuRestriction
-	.TargetingFlag
-	.AttackEffectId
-	.DamageCalculation
-	.PowerForDamageCalculation
-	.ConditionSubmenu
-	.StatusEffectChange
-	.AdditionalEffectsModifier
-	.StatusEffectMask
-	.ElementMask
-	.SpecialAttackFlags
-File 5 - Weapon Data
+-----------------------------------------------------------------
+								| Bytes		| MinVal	| MaxVal
+-----------------------------------------------------------------
+Table 0 - Command Data
+-----------------------------------------------------------------
+	.InitialCursorAction		| 1
+	.TargetingFlag				| 1
+	.Unknown1					| 2
+	.CameraIdSingleTarget		| 2
+	.CameraIdMultiTarget		| 2
+
+-----------------------------------------------------------------
+Table 1 - Attack Data
+-----------------------------------------------------------------
+	.AtkPercent					| 1
+	.ImpactEffectId				| 1
+	.TargetHurtActionId			| 1
+	.Unknown1					| 1
+	.MPCost						| 2
+	.ImpactSoundId				| 2
+	.CameraIdSingleTarget		| 2
+	.CameraIdMultiTarget		| 2
+	.TargetingFlag				| 1
+	.AttackEffectId				| 1
+	.DamageCalculation			| 1
+	.PowerForDamageCalculation	| 1
+	.RestoreType				| 1
+	.StatusEffectChange			| 1
+	.AdditionalAttackEffects	| 1
+	.AdditionalEffectsModifier	| 1
+	.StatusEffectMask			| 4
+	.ElementMask				| 2
+	.SpecialAttackFlags			| 2
+
+-----------------------------------------------------------------
+Table 2 - Battle & Growth Data [Variable Sizes]
+-----------------------------------------------------------------
+	.CloudData					| 56
+		.StrLevelUpCurve		| 1
+		.VitLevelUpCurve		| 1
+		.MagLevelUpCurve		| 1
+		.SprLevelUpCurve		| 1
+		.DexLevelUpCurve		| 1
+		.LukLevelUpCurve		| 1
+		.HPLevelUpCurve			| 1
+		.MPLevelUpCurve			| 1
+		.ExpLevelUpCurve		| 1
+		.Padding1				| 1
+		.StartingLevel			| 1
+		.Padding2				| 1
+		.LimitCommandId1_1		| 1
+		.LimitCommandId1_2		| 1
+		.LimitCommandId1_3		| 1
+		.LimitCommandId2_1		| 1
+		.LimitCommandId2_2		| 1
+		.LimitCommandId2_3		| 1
+		.LimitCommandId3_1		| 1
+		.LimitCommandId3_2		| 1
+		.LimitCommandId3_3		| 1
+		.LimitCommandId4_1		| 1
+		.LimitCommandId4_2		| 1
+		.LimitCommandId4_3		| 1
+		.KillsToLimitLvl2		| 2
+		.KillsToLimitLvl3		| 2
+		.ReqUsesForLimit1_2		| 2
+		.ReqUsesForLimit1_3		| 2
+		.ReqUsesForLimit2_2		| 2
+		.ReqUsesForLimit2_3		| 2
+		.ReqUsesForLimit3_2		| 2
+		.ReqUsesForLimit3_3		| 2
+		.HPDivisorLimitLvl1		| 4
+		.HPDivisorLimitLvl2		| 4
+		.HPDivisorLimitLvl3		| 4
+		.HPDivisorLimitLvl4		| 4
+	.BarretData					| 56
+		// see Cloud section breakdown
+	.TifaData					| 56
+		// see Cloud section breakdown
+	.AerisData					| 56
+		// see Cloud section breakdown
+	.NanakiData					| 56
+		// see Cloud section breakdown
+	.YuffieData					| 56
+		// see Cloud section breakdown
+	.CaitSithData				| 56
+		// see Cloud section breakdown
+	.VincentData				| 56
+		// see Cloud section breakdown
+	.CidData					| 56
+		// see Cloud section breakdown
+	.RandBonusToPrimaryStats	| 12
+	.RandBonusToHP				| 12
+	.RandBonusToMP				| 12
+	.PrimaryStatCurves			| 37*16 (6 stats, 9 characters, 16 pts)
+	.HPStatCurve				| 9*16
+	.MPStatCurve				| 9*16
+	.ExpStatCurve				| 9*16
+	.CharAIData					| 1508
+	.Padding					| 540
+	.RandNumLookupTable			| 256		| 0x00		| 0xFF
+	.SceneLookupTable			| 64
+	.SpellOrderForMagicMenu		| 56
+
+-----------------------------------------------------------------
+Table 3 - Initialization Data (Savemap Init)
+-----------------------------------------------------------------
+	.CharRecordCloud			| 132
+		.CharacterIdFlag		| 1
+		.Level					| 1			| 0x00		| 0x63
+		.Strength				| 1			| 0x00		| 0xFF
+		.Vitality				| 1			| 0x00		| 0xFF
+		.Magic					| 1			| 0x00		| 0xFF
+		.Spirit					| 1			| 0x00		| 0xFF
+		.Dexterity				| 1			| 0x00		| 0xFF
+		.Luck					| 1			| 0x00		| 0xFF
+		.PowerSourcesUsed		| 1			| 0x00		| 0xFF
+		.GuardSourcesUsed		| 1			| 0x00		| 0xFF
+		.MagicSourcesUsed		| 1			| 0x00		| 0xFF
+		.MindSourcesUsed		| 1			| 0x00		| 0xFF
+		.SpeedSourcesUsed		| 1			| 0x00		| 0xFF
+		.LuckSourcesUsed		| 1			| 0x00		| 0xFF
+		.CurrentLimitLvl		| 1			| 0x01		| 0x04
+		.CurrentLimitBar		| 1			| 0x00		| 0xFF
+		.Name					| 12		| FFText Format
+		.EquippedWeaponId		| 1			| 
+		.EquippedArmorId		| 1			| 
+		.EquippedAccessoryId	| 1			| 
+		.CharacterFlags			| 1			| 			| 
+		.CharRowFlag			| 1			| 
+		.LevelProgressBar		| 1			| 0x00		| 0x63
+		.LearnedLimitSkills		| 2			|			| 
+		.NumberOfKills			| 2			| 0x0000	| 0xFFFF
+		.TimesLimit1_1Used		| 2			| 0x0000	| 0xFFFF
+		.TimesLimit2_1Used		| 2			| 0x0000	| 0xFFFF
+		.TimesLimit3_1Used		| 2			| 0x0000	| 0xFFFF
+		.CurrentHP				| 2			| 0x0000	| 0xFFFF
+		.BaseHP					| 2			| 0x0000	| 0xFFFF
+		.CurrentMP				| 2			| 0x0000	| 0xFFFF
+		.BaseMP					| 2			| 0x0000	| 0xFFFF
+		.Unknown1				| 4			| 
+		.MaxHP					| 2			| 0x0000	| 0xFFFF
+		.MaxMP					| 2			| 0x0000	| 0xFFFF
+		.CurrentExp				| 4			| 0x0000..	| 0xFFFF..
+		.WeaponMateriaSlot1		| 4			| 
+		.WeaponMateriaSlot2		| 4			| 
+		.WeaponMateriaSlot3		| 4			| 
+		.WeaponMateriaSlot4		| 4			| 
+		.WeaponMateriaSlot5		| 4			| 
+		.WeaponMateriaSlot6		| 4			| 
+		.WeaponMateriaSlot7		| 4			| 
+		.WeaponMateriaSlot8		| 4			| 
+		.ArmorMateriaSlot1		| 4			| 
+		.ArmorMateriaSlot2		| 4			| 
+		.ArmorMateriaSlot3		| 4			| 
+		.ArmorMateriaSlot4		| 4			| 
+		.ArmorMateriaSlot5		| 4			| 
+		.ArmorMateriaSlot6		| 4			| 
+		.ArmorMateriaSlot7		| 4			| 
+		.ArmorMateriaSlot8		| 4			| 
+		.ExpToNextLevel			| 4			| 0x0000..	| 0xFFFF..
+	.CharRecordBarret			| 132
+		// see Cloud section breakdown
+	.CharRecordTifa				| 132
+		// see Cloud section breakdown
+	.CharRecordAeris			| 132
+		// see Cloud section breakdown
+	.CharRecordNanaki			| 132
+		// see Cloud section breakdown
+	.CharRecordYuffie			| 132
+		// see Cloud section breakdown
+	.CharRecordCaitSith			| 132
+		// see Cloud section breakdown
+	.CharRecordVincent			| 132
+		// see Cloud section breakdown
+	.CharRecordCid				| 132
+		// see Cloud section breakdown
+	.CharIdPartyMemeberSlot1	| 1
+	.CharIdPartyMemeberSlot2	| 1
+	.CharIdPartyMemeberSlot3	| 1
+	.Padding1					| 1
+	.PartyItemStock				| 640 (2*320)
+	.PartyMarteriaStock			| 800 (4*200)
+	.MateriaSolenByYuffie		| 192 (4*48)
+
+-----------------------------------------------------------------
+Table 4 - Item Data
+-----------------------------------------------------------------
+	.Unknown1					| 8
+	.CameraMovementId			| 2
+	.MenuRestriction			| 2
+	.TargetingFlag				| 1
+	.AttackEffectId				| 1
+	.DamageCalculation			| 1
+	.PowerForDamageCalculation	| 1
+	.ConditionSubmenu			| 1
+	.StatusEffectChange			| 1
+	.AdditionalEffectsModifier	| 1
+	.StatusEffectMask			| 4
+	.ElementMask				| 2
+	.SpecialAttackFlags			| 2
+
+-----------------------------------------------------------------
+Table 5 - Weapon Data
+-----------------------------------------------------------------
 	.TargetingFlag
 	.AttackEffectId
 	.DamageCalculation
@@ -81,7 +242,10 @@ File 5 - Weapon Data
 	.SoundIdImpact
 	.SpecialAttackFlags
 	.MenuRestriction
-File 6 - Armors
+
+-----------------------------------------------------------------
+Table 6 - Armors
+-----------------------------------------------------------------
 	.Unknown1
 	.ElementAffinity
 	.Defense
@@ -112,7 +276,10 @@ File 6 - Armors
 	.Stat4Increase
 	.MenuRestriction
 	.Unknown4
-File 7 - Accessory Data
+
+-----------------------------------------------------------------
+Table 7 - Accessory Data
+-----------------------------------------------------------------
 	.StatId1
 	.StatId2
 	.Stat1Increase
@@ -123,7 +290,10 @@ File 7 - Accessory Data
 	.StatusMask
 	.CharacterMask
 	.MenuRestriction
-File 8 - Materia Data
+
+-----------------------------------------------------------------
+Table 8 - Materia Data
+-----------------------------------------------------------------
 	.APReq1
 	.APReq2
 	.APReq3
@@ -138,3 +308,108 @@ File 8 - Materia Data
 	.SprModifier
 	.DexModifier
 	.LukModifier
+
+=================================================================
+Derived Character Table
+=================================================================
+.Charname
+	.CharacterIdFlag		| 1
+		// this handles swapping Cait Sith with Young Cloud and Vincent with Sephiroth
+	.Level					| 1			| 0x00		| 0x63
+	.Strength				| 1			| 0x00		| 0xFF
+	.Vitality				| 1			| 0x00		| 0xFF
+	.Magic					| 1			| 0x00		| 0xFF
+	.Spirit					| 1			| 0x00		| 0xFF
+	.Dexterity				| 1			| 0x00		| 0xFF
+	.Luck					| 1			| 0x00		| 0xFF
+	.PowerSourcesUsed		| 1			| 0x00		| 0xFF
+	.GuardSourcesUsed		| 1			| 0x00		| 0xFF
+	.MagicSourcesUsed		| 1			| 0x00		| 0xFF
+	.MindSourcesUsed		| 1			| 0x00		| 0xFF
+	.SpeedSourcesUsed		| 1			| 0x00		| 0xFF
+	.LuckSourcesUsed		| 1			| 0x00		| 0xFF
+	.CurrentLimitLvl		| 1			| 0x01		| 0x04
+	.CurrentLimitBar		| 1			| 0x00		| 0xFF
+	.Name					| 12		| FFText Format
+	.EquippedWeaponId		| 1			| 
+	.EquippedArmorId		| 1			| 
+	.EquippedAccessoryId	| 1			| 
+	.CharacterFlags			| 1			| 			| 
+	.CharRowFlag			| 1			| 
+	.LevelProgressBar		| 1			| 0x00		| 0x63
+	.LearnedLimitSkills		| 2			|			| 
+	.NumberOfKills			| 2			| 0x0000	| 0xFFFF
+	.TimesLimit1_1Used		| 2			| 0x0000	| 0xFFFF
+	.TimesLimit2_1Used		| 2			| 0x0000	| 0xFFFF
+	.TimesLimit3_1Used		| 2			| 0x0000	| 0xFFFF
+	.CurrentHP				| 2			| 0x0000	| 0xFFFF
+	.BaseHP					| 2			| 0x0000	| 0xFFFF
+	.CurrentMP				| 2			| 0x0000	| 0xFFFF
+	.BaseMP					| 2			| 0x0000	| 0xFFFF
+	.Unknown1				| 4			| 
+	.MaxHP					| 2			| 0x0000	| 0xFFFF
+	.MaxMP					| 2			| 0x0000	| 0xFFFF
+	.CurrentExp				| 4			| 0x0000..	| 0xFFFF..
+	.WeaponMateriaSlot1		| 4			| 
+	.WeaponMateriaSlot2		| 4			| 
+	.WeaponMateriaSlot3		| 4			| 
+	.WeaponMateriaSlot4		| 4			| 
+	.WeaponMateriaSlot5		| 4			| 
+	.WeaponMateriaSlot6		| 4			| 
+	.WeaponMateriaSlot7		| 4			| 
+	.WeaponMateriaSlot8		| 4			| 
+	.ArmorMateriaSlot1		| 4			| 
+	.ArmorMateriaSlot2		| 4			| 
+	.ArmorMateriaSlot3		| 4			| 
+	.ArmorMateriaSlot4		| 4			| 
+	.ArmorMateriaSlot5		| 4			| 
+	.ArmorMateriaSlot6		| 4			| 
+	.ArmorMateriaSlot7		| 4			| 
+	.ArmorMateriaSlot8		| 4			| 
+	.ExpToNextLevel			| 4			| 0x0000..	| 0xFFFF..
+	.StrLevelUpCurve		| 1
+	.VitLevelUpCurve		| 1
+	.MagLevelUpCurve		| 1
+	.SprLevelUpCurve		| 1
+	.DexLevelUpCurve		| 1
+	.LukLevelUpCurve		| 1
+	.HPLevelUpCurve			| 1
+	.MPLevelUpCurve			| 1
+	.ExpLevelUpCurve		| 1
+	.Padding1				| 1
+	.StartingLevel			| 1
+	.Padding2				| 1
+	.LimitCommandId1_1		| 1
+	.LimitCommandId1_2		| 1
+	.LimitCommandId1_3		| 1
+	.LimitCommandId2_1		| 1
+	.LimitCommandId2_2		| 1
+	.LimitCommandId2_3		| 1
+	.LimitCommandId3_1		| 1
+	.LimitCommandId3_2		| 1
+	.LimitCommandId3_3		| 1
+	.LimitCommandId4_1		| 1
+	.LimitCommandId4_2		| 1
+	.LimitCommandId4_3		| 1
+	.KillsToLimitLvl2		| 2
+	.KillsToLimitLvl3		| 2
+	.ReqUsesForLimit1_2		| 2
+	.ReqUsesForLimit1_3		| 2
+	.ReqUsesForLimit2_2		| 2
+	.ReqUsesForLimit2_3		| 2
+	.ReqUsesForLimit3_2		| 2
+	.ReqUsesForLimit3_3		| 2
+	.HPDivisorLimitLvl1		| 4
+	.HPDivisorLimitLvl2		| 4
+	.HPDivisorLimitLvl3		| 4
+	.HPDivisorLimitLvl4		| 4
+	.StrStatCurve			| 16*1
+	.VitStatCurve			| 16*1
+	.MagStatCurve			| 16*1
+	.SprStatCurve			| 16*1
+	.DexStatCurve			| 16*1
+	.LukStatCurve			| 16*1
+	.HPStatCurve			| 16*1
+	.MPStatCurve			| 16*1
+	.ExpStatCurve			| 16*1
+	.CharAIData				| Varies
