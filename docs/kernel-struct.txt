@@ -127,9 +127,9 @@ Table 3 - Initialization Data (Savemap Init)
 		.EquippedWeaponId		| 1			| 
 		.EquippedArmorId		| 1			| 
 		.EquippedAccessoryId	| 1			| 
-		.CharacterFlags			| 1			| 			| 
-		.CharRowFlag			| 1			| 
-		.LevelProgressBar		| 1			| 0x00		| 0x63
+		.StatusFlag				| 1			| 			| 
+		.RowFlag				| 1			| 
+		.LvlProgressBar			| 1			| 0x00		| 0x63
 		.LearnedLimitSkills		| 2			|			| 
 		.NumberOfKills			| 2			| 0x0000	| 0xFFFF
 		.TimesLimit1_1Used		| 2			| 0x0000	| 0xFFFF
@@ -159,7 +159,7 @@ Table 3 - Initialization Data (Savemap Init)
 		.ArmorMateriaSlot6		| 4			| 
 		.ArmorMateriaSlot7		| 4			| 
 		.ArmorMateriaSlot8		| 4			| 
-		.ExpToNextLevel			| 4			| 0x0000..	| 0xFFFF..
+		.ExpToLevel				| 4			| 0x0000..	| 0xFFFF..
 	.CharRecordBarret			| 132
 		// see Cloud section breakdown
 	.CharRecordTifa				| 132
@@ -367,15 +367,18 @@ Derived Character Table
 	.ArmorMateriaSlot7		| 4			| 
 	.ArmorMateriaSlot8		| 4			| 
 	.ExpToNextLevel			| 4			| 0x0000..	| 0xFFFF..
-	.StrLevelUpCurve		| 1
-	.VitLevelUpCurve		| 1
-	.MagLevelUpCurve		| 1
-	.SprLevelUpCurve		| 1
-	.DexLevelUpCurve		| 1
-	.LukLevelUpCurve		| 1
-	.HPLevelUpCurve			| 1
-	.MPLevelUpCurve			| 1
-	.ExpLevelUpCurve		| 1
+	/////
+	-----> splits to level & curve data
+	/////
+	.StrLvlUpCurve			| 1
+	.VitLvlUpCurve			| 1
+	.MagLvlUpCurve			| 1
+	.SprLvlUpCurve			| 1
+	.DexLvlUpCurve			| 1
+	.LukLvlUpCurve			| 1
+	.HPLvlUpCurve			| 1
+	.MPLvlUpCurve			| 1
+	.ExpLvlUpCurve			| 1
 	.Padding1				| 1
 	.StartingLevel			| 1
 	.Padding2				| 1
@@ -403,13 +406,159 @@ Derived Character Table
 	.HPDivisorLimitLvl2		| 4
 	.HPDivisorLimitLvl3		| 4
 	.HPDivisorLimitLvl4		| 4
-	.StrStatCurve			| 16*1
-	.VitStatCurve			| 16*1
-	.MagStatCurve			| 16*1
-	.SprStatCurve			| 16*1
-	.DexStatCurve			| 16*1
-	.LukStatCurve			| 16*1
-	.HPStatCurve			| 16*1
-	.MPStatCurve			| 16*1
-	.ExpStatCurve			| 16*1
+	----> splits @ it == 36 (skips 36 bytes)
+	.StrStatCurve1			| 1		// lvl 2-11
+	.StrStatCurve2			| 1		// lvl 2-11
+	.StrStatCurve3			| 1		// lvl 12-21
+	.StrStatCurve4			| 1		// lvl 12-21
+	.StrStatCurve5			| 1		// lvl 22-31
+	.StrStatCurve6			| 1		// lvl 22-31
+	.StrStatCurve7			| 1		// lvl 32-41
+	.StrStatCurve8			| 1		// lvl 32-41
+	.StrStatCurve9			| 1		// lvl 42-51
+	.StrStatCurve10			| 1		// lvl 42-51
+	.StrStatCurve11			| 1		// lvl 52-61
+	.StrStatCurve12			| 1		// lvl 52-61
+	.StrStatCurve13			| 1		// lvl 62-81
+	.StrStatCurve14			| 1		// lvl 62-81
+	.StrStatCurve15			| 1		// lvl 82-99
+	.StrStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 52 (skips )
+	.VitStatCurve1			| 1		// lvl 2-11
+	.VitStatCurve2			| 1		// lvl 2-11
+	.VitStatCurve3			| 1		// lvl 12-21
+	.VitStatCurve4			| 1		// lvl 12-21
+	.VitStatCurve5			| 1		// lvl 22-31
+	.VitStatCurve6			| 1		// lvl 22-31
+	.VitStatCurve7			| 1		// lvl 32-41
+	.VitStatCurve8			| 1		// lvl 32-41
+	.VitStatCurve9			| 1		// lvl 42-51
+	.VitStatCurve10			| 1		// lvl 42-51
+	.VitStatCurve11			| 1		// lvl 52-61
+	.VitStatCurve12			| 1		// lvl 52-61
+	.VitStatCurve13			| 1		// lvl 62-81
+	.VitStatCurve14			| 1		// lvl 62-81
+	.VitStatCurve15			| 1		// lvl 82-99
+	.VitStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 68
+	.MagStatCurve1			| 1		// lvl 2-11
+	.MagStatCurve2			| 1		// lvl 2-11
+	.MagStatCurve3			| 1		// lvl 12-21
+	.MagStatCurve4			| 1		// lvl 12-21
+	.MagStatCurve5			| 1		// lvl 22-31
+	.MagStatCurve6			| 1		// lvl 22-31
+	.MagStatCurve7			| 1		// lvl 32-41
+	.MagStatCurve8			| 1		// lvl 32-41
+	.MagStatCurve9			| 1		// lvl 42-51
+	.MagStatCurve10			| 1		// lvl 42-51
+	.MagStatCurve11			| 1		// lvl 52-61
+	.MagStatCurve12			| 1		// lvl 52-61
+	.MagStatCurve13			| 1		// lvl 62-81
+	.MagStatCurve14			| 1		// lvl 62-81
+	.MagStatCurve15			| 1		// lvl 82-99
+	.MagStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 84
+	.SprStatCurve1			| 1		// lvl 2-11
+	.SprStatCurve2			| 1		// lvl 2-11
+	.SprStatCurve3			| 1		// lvl 12-21
+	.SprStatCurve4			| 1		// lvl 12-21
+	.SprStatCurve5			| 1		// lvl 22-31
+	.SprStatCurve6			| 1		// lvl 22-31
+	.SprStatCurve7			| 1		// lvl 32-41
+	.SprStatCurve8			| 1		// lvl 32-41
+	.SprStatCurve9			| 1		// lvl 42-51
+	.SprStatCurve10			| 1		// lvl 42-51
+	.SprStatCurve11			| 1		// lvl 52-61
+	.SprStatCurve12			| 1		// lvl 52-61
+	.SprStatCurve13			| 1		// lvl 62-81
+	.SprStatCurve14			| 1		// lvl 62-81
+	.SprStatCurve15			| 1		// lvl 82-99
+	.SprStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 100
+	.DexStatCurve1			| 1		// lvl 2-11
+	.DexStatCurve2			| 1		// lvl 2-11
+	.DexStatCurve3			| 1		// lvl 12-21
+	.DexStatCurve4			| 1		// lvl 12-21
+	.DexStatCurve5			| 1		// lvl 22-31
+	.DexStatCurve6			| 1		// lvl 22-31
+	.DexStatCurve7			| 1		// lvl 32-41
+	.DexStatCurve8			| 1		// lvl 32-41
+	.DexStatCurve9			| 1		// lvl 42-51
+	.DexStatCurve10			| 1		// lvl 42-51
+	.DexStatCurve11			| 1		// lvl 52-61
+	.DexStatCurve12			| 1		// lvl 52-61
+	.DexStatCurve13			| 1		// lvl 62-81
+	.DexStatCurve14			| 1		// lvl 62-81
+	.DexStatCurve15			| 1		// lvl 82-99
+	.DexStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 116
+	.LukStatCurve1			| 1		// lvl 2-11
+	.LukStatCurve2			| 1		// lvl 2-11
+	.LukStatCurve3			| 1		// lvl 12-21
+	.LukStatCurve4			| 1		// lvl 12-21
+	.LukStatCurve5			| 1		// lvl 22-31
+	.LukStatCurve6			| 1		// lvl 22-31
+	.LukStatCurve7			| 1		// lvl 32-41
+	.LukStatCurve8			| 1		// lvl 32-41
+	.LukStatCurve9			| 1		// lvl 42-51
+	.LukStatCurve10			| 1		// lvl 42-51
+	.LukStatCurve11			| 1		// lvl 52-61
+	.LukStatCurve12			| 1		// lvl 52-61
+	.LukStatCurve13			| 1		// lvl 62-81
+	.LukStatCurve14			| 1		// lvl 62-81
+	.LukStatCurve15			| 1		// lvl 82-99
+	.LukStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 132
+	.HPStatCurve1			| 1		// lvl 2-11
+	.HPStatCurve2			| 1		// lvl 2-11
+	.HPStatCurve3			| 1		// lvl 12-21
+	.HPStatCurve4			| 1		// lvl 12-21
+	.HPStatCurve5			| 1		// lvl 22-31
+	.HPStatCurve6			| 1		// lvl 22-31
+	.HPStatCurve7			| 1		// lvl 32-41
+	.HPStatCurve8			| 1		// lvl 32-41
+	.HPStatCurve9			| 1		// lvl 42-51
+	.HPStatCurve10			| 1		// lvl 42-51
+	.HPStatCurve11			| 1		// lvl 52-61
+	.HPStatCurve12			| 1		// lvl 52-61
+	.HPStatCurve13			| 1		// lvl 62-81
+	.HPStatCurve14			| 1		// lvl 62-81
+	.HPStatCurve15			| 1		// lvl 82-99
+	.HPStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 148
+	.MPStatCurve1			| 1		// lvl 2-11
+	.MPStatCurve2			| 1		// lvl 2-11
+	.MPStatCurve3			| 1		// lvl 12-21
+	.MPStatCurve4			| 1		// lvl 12-21
+	.MPStatCurve5			| 1		// lvl 22-31
+	.MPStatCurve6			| 1		// lvl 22-31
+	.MPStatCurve7			| 1		// lvl 32-41
+	.MPStatCurve8			| 1		// lvl 32-41
+	.MPStatCurve9			| 1		// lvl 42-51
+	.MPStatCurve10			| 1		// lvl 42-51
+	.MPStatCurve11			| 1		// lvl 52-61
+	.MPStatCurve12			| 1		// lvl 52-61
+	.MPStatCurve13			| 1		// lvl 62-81
+	.MPStatCurve14			| 1		// lvl 62-81
+	.MPStatCurve15			| 1		// lvl 82-99
+	.MPStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 164
+	.ExpStatCurve1			| 1		// lvl 2-11
+	.ExpStatCurve2			| 1		// lvl 2-11
+	.ExpStatCurve3			| 1		// lvl 12-21
+	.ExpStatCurve4			| 1		// lvl 12-21
+	.ExpStatCurve5			| 1		// lvl 22-31
+	.ExpStatCurve6			| 1		// lvl 22-31
+	.ExpStatCurve7			| 1		// lvl 32-41
+	.ExpStatCurve8			| 1		// lvl 32-41
+	.ExpStatCurve9			| 1		// lvl 42-51
+	.ExpStatCurve10			| 1		// lvl 42-51
+	.ExpStatCurve11			| 1		// lvl 52-61
+	.ExpStatCurve12			| 1		// lvl 52-61
+	.ExpStatCurve13			| 1		// lvl 62-81
+	.ExpStatCurve14			| 1		// lvl 62-81
+	.ExpStatCurve15			| 1		// lvl 82-99
+	.ExpStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 180
 	.CharAIData				| Varies
+		// header for section contains offset and size
