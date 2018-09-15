@@ -8,7 +8,6 @@
 //#include <menu.h>
 //#include <field.h>
 #include <yamada.h>
-#include <utility.h>
 
 int main(int argc, char **argv) {
 	// TODO: Get psximager integrated.

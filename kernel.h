@@ -21,7 +21,8 @@
 //
 // custom libs
 #include <fftext.h>     // fftext namespace
-#include <utility.h>    // data conversion and structuring
+#include <gzip.h>       // gzip namespace
+#include <conversions.h>    // data conversion and structuring
 
 struct ItemRecord {
 	std::map<std::string, std::string> Data;

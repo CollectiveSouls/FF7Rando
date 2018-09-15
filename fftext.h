@@ -12,7 +12,7 @@
 #include <bitset>
 //
 // custom libs
-#include <utility.h>    // convert namespace
+#include <conversions.h>    // convert namespace
 
 /*
  * fftext file handlers
