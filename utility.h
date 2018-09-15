@@ -34,6 +34,11 @@ struct ItemData {
 	std::string desc;
 };
 
+struct CharData {
+  std::string Name;
+  std::map<std::string, std::string> Data;
+};
+
 struct DataFile {
 	int cmpSize;
 	int rawSize;
