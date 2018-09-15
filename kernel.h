@@ -6,23 +6,31 @@
 
 //
 // std namespace libs
-#include <iostream>		  // std::cout
-#include <fstream>		  // std::fstream, std::ifstream, std::ofstream
+#include <iostream>		      // std::cout
+#include <fstream>		      // std::fstream, std::ifstream, std::ofstream
 #include <iomanip>		
-#include <utility>      // std::pair
-#include <sstream>		  // std::stringstream
-#include <string>		    // std::string
-#include <vector>		    // std::vector
-#include <cstdlib>      // std::rand, std::srand
-#include <algorithm>    // std::shuffle
+#include <utility>          // std::pair
+#include <sstream>		      // std::stringstream
+#include <string>		        // std::string
+#include <vector>		        // std::vector
+#include <cstdlib>          // std::rand, std::srand
+#include <algorithm>        // std::shuffle
 #include <random>
-#include <ctime>        // std::time
+#include <ctime>            // std::time
 #include <map>
+
 //
 // custom libs
-#include <fftext.h>     // fftext namespace
-#include <gzip.h>       // gzip namespace
+#include <fftext.h>         // fftext namespace
+#include <gzip.h>           // gzip namespace
 #include <conversions.h>    // data conversion and structuring
+
+struct DataFile {
+	int cmpSize;
+	int rawSize;
+	int index;
+	std::string content;
+};
 
 struct ItemRecord {
 	std::map<std::string, std::string> Data;
@@ -39,13 +47,6 @@ struct ItemData {
 struct CharData {
   std::string Name;
   std::map<std::string, std::string> Data;
-};
-
-struct DataFile {
-	int cmpSize;
-	int rawSize;
-	int index;
-	std::string content;
 };
 
 class Kernel {
@@ -284,7 +285,18 @@ class Kernel {
       {"LimitCommandId4_1",2},
       {"LimitCommandId4_2",2},
       {"LimitCommandId4_3",2},
-
+      {"KillsToLimit2",4},
+      {"KillsToLimit3",4},
+      {"ReqUsesForLimit1_2",4},
+      {"ReqUsesForLimit1_3",4},
+      {"ReqUsesForLimit2_2",4},
+      {"ReqUsesForLimit2_3",4},
+      {"ReqUsesForLimit3_2",4},
+      {"ReqUsesForLimit3_3",4},
+      {"HPDivisorLimitLvl1",4},
+      {"HPDivisorLimitLvl2",4},
+      {"HPDivisorLimitLvl3",4},
+      {"HPDivisorLimitLvl4",4}
     };
     std::vector<std::vector<ItemRecord> > workingTables;
     // Kernel::methods
@@ -540,23 +552,26 @@ std::vector<CharData> Kernel::makeCharTables() {
   std::vector<CharData> outputTable;
   CharData charData;
   unsigned int itemStart = 0;
+  unsigned int itemStart2 = 0;
   
   for(unsigned int i = 0; i < CHARACTER_COUNT; i++) {
     //
     // get data from initialization table
     for(unsigned int j = 0; j < INIT_CHAR_STRUCT.size(); j++) {
-      charData.Data[INIT_CHAR_STRUCT[j].first] = arr_unpackedData[3].content.substr(itemStart,INIT_CHAR_STRUCT[j].second);
+      charData.Data[INIT_CHAR_STRUCT[j].first] = arr_unpackedData[3].content.substr(itemStart, INIT_CHAR_STRUCT[j].second);
       itemStart += INIT_CHAR_STRUCT[j].second;
     }
+    
     //
     // get data from battle and growth table
-    for(unsigned int j = 0; j < INIT_CHAR_STRUCT.size(); j++) {
-      charData.Data[INIT_CHAR_STRUCT[j].first] = arr_unpackedData[3].content.substr(itemStart,INIT_CHAR_STRUCT[j].second);
-      itemStart += INIT_CHAR_STRUCT[j].second;
+    for(unsigned int j = 0; j < LAC_CHAR_STRUCT.size(); j++) {
+      charData.Data[LAC_CHAR_STRUCT[j].first] = arr_unpackedData[3].content.substr(itemStart2, LAC_CHAR_STRUCT[j].second);
+      itemStart2 += LAC_CHAR_STRUCT[j].second;
     }    
     //
     // set CharData name for easier access later
     charData.Name = fftext::decode(charData.Data["Name"]);
+//    std::cout << "\t" << charData.Name << " included in the fun!" << std::endl;
     outputTable.push_back(charData);
   }
   return outputTable;
