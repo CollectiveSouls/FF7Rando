@@ -1,12 +1,18 @@
 // std libs
 // N/A
 
+//
+// psx-imager for working with psx disc isos directly
+// #include <psximager/psxbuild.h>
+// #include <psximager/psxinject.h>
+// #include <psximager/psxrip.h>
+
+//
 // custom libs
 #include <kernel.h>
 #include <scene.h>
 #include <window.h>
-//#include <menu.h>
-//#include <field.h>
+#include <field.h>
 #include <yamada.h>
 
 int main(int argc, char **argv) {
