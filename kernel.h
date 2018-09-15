@@ -31,6 +31,34 @@ class Kernel {
 		std::string str_target;
 		std::string str_rawData;
 		std::vector<DataFile> arr_unpackedData;
+    const std::vector<std::pair<std::string, unsigned int> > COMMAND_STRUCT {
+      {"InitialCursorAction", 2},
+      {"TargetingFlag", 2},
+      {"Unknown1", 4},
+      {"CameraMoveIdSingleTarget", 2},
+      {"CameraMoveIdMultiTarget", 2}
+    };
+    const std::vector<std::pair<std::string, unsigned int> > ATTACK_STRUCT {
+      {"AttackPercent", 2},
+      {"ImpactEffectId", 2},
+      {"TargetHurtActionId", 2},
+      {"Unknown1", 2},
+      {"MPCost", 4},
+      {"SoundIdImpact", 2},
+      {"CameraMoveIdSingleTarget", 4},
+      {"CameraMoveIdMultiTarget", 4},
+      {"TargetingFlag", 2},
+      {"AttackEffectId", 2},
+      {"DamageCalculation", 2},
+      {"PowerForDamageCalculation", 2},
+      {"RestoreType", 2},
+      {"StatusEffectChange", 2},
+      {"AdditionalAttackEffects", 2},
+      {"AdditionalEffectsModifier", 2},
+      {"StatusEffectMask", 8},
+      {"ElementMask", 4},
+      {"SpecialAttackFlags", 4}
+    };
     const std::vector<std::pair<std::string, unsigned int> > ITEMS_STRUCT {
       {"Unknown1", 16},
       {"CameraMovementId", 4},
@@ -57,6 +85,7 @@ class Kernel {
       {"MateriaGrowthModifier", 2},
       {"CriticalHitPercent", 2},
       {"WeaponHitPercent", 2},
+      {"WeaponModelId", 2},
       {"ModelAlignment", 2},
       {"HighSoundId", 2},
       {"CameraMovementId", 4},
@@ -146,8 +175,91 @@ class Kernel {
       {"DexModifier", 2},
       {"LukModifier", 2}
     };
-		std::vector<std::vector<ItemRecord> > workingTables;
+    const std::vector<std::pair<std::string, unsigned int> > INIT_CHAR_STRUCT = {
+      {"CharacterIdFlag", 2},
+      {"Level", 2},
+      {"Strength", 2},
+      {"Vitality", 2},
+      {"Magic", 2},
+      {"Spirit", 2},
+      {"Dexterity", 2},
+      {"Luck", 2},
+      {"PowerSourcesUsed", 2},
+      {"GuardSourcesUsed", 2},
+      {"MagicSourcesUsed", 2},
+      {"MindSourcesUsed", 2},
+      {"SpeedSourcesUsed", 2},
+      {"LuckSourcesUsed", 2},
+      {"CurrentLimitLvl", 2},
+      {"CurrentLimitBar", 2},
+      {"Name", 24},
+      {"EquippedWeaponId", 2},
+      {"EquippedArmorId", 2},
+      {"EquippedAccessoryId", 2},
+      {"StatusFlag", 2},
+      {"RowFlag", 2},
+      {"LvlProgressBar", 2},
+      {"LearnedLimitSkills", 4},
+      {"NumberOfKills", 4},
+      {"TimesLimit1_1Used", 4},
+      {"TimesLimit2_1Used", 4},
+      {"TimesLimit3_1Used", 4},
+      {"CurrentHP", 4},
+      {"BaseHP", 4},
+      {"CurrentMP", 4},
+      {"BaseMP", 4},
+      {"Unknown1", 8},
+      {"MaxHP", 4},
+      {"MaxMP", 4},
+      {"CurrentExp", 8},
+      {"WeaponMateriaSlot1", 8},
+      {"WeaponMateriaSlot2", 8},
+      {"WeaponMateriaSlot3", 8},
+      {"WeaponMateriaSlot4", 8},
+      {"WeaponMateriaSlot5", 8},
+      {"WeaponMateriaSlot6", 8},
+      {"WeaponMateriaSlot7", 8},
+      {"WeaponMateriaSlot8", 8},
+      {"ArmorMateriaSlot1", 8},
+      {"ArmorMateriaSlot2", 8},
+      {"ArmorMateriaSlot3", 8},
+      {"ArmorMateriaSlot4", 8},
+      {"ArmorMateriaSlot5", 8},
+      {"ArmorMateriaSlot6", 8},
+      {"ArmorMateriaSlot7", 8},
+      {"ArmorMateriaSlot8", 8},
+      {"ExpToLevel", 8}
+    };
+		const std::vector<std::pair<std::string, unsigned int> > LAC_CHAR_STRUCT = {
+      {"StrLvlUpCurve",2},
+      {"VitLvlUpCurve",2},
+      {"MagLvlUpCurve",2},
+      {"SprLvlUpCurve",2},
+      {"DexLvlUpCurve",2},
+      {"LukLvlUpCurve",2},
+      {"HPLvlUpCurve",2},
+      {"MPLvlUpCurve",2},
+      {"ExpLvlUpCurve",2},
+      {"Padding1",2},
+      {"StartingLevel",2},
+      {"Padding2",2},
+      {"LimitCommandId1_1",2},
+      {"LimitCommandId1_2",2},
+      {"LimitCommandId1_3",2},
+      {"LimitCommandId2_1",2},
+      {"LimitCommandId2_2",2},
+      {"LimitCommandId2_3",2},
+      {"LimitCommandId3_1",2},
+      {"LimitCommandId4_2",2},
+      {"LimitCommandId5_3",2},
+      {"LimitCommandId4_1",2},
+      {"LimitCommandId4_2",2},
+      {"LimitCommandId4_3",2},
+
+    };
+    std::vector<std::vector<ItemRecord> > workingTables;
     // Kernel::methods
+    std::vector<CharData> makeCharTables();
 		std::vector<DataFile> unpackFile(std::string& str_inputData);
 		std::vector<DataFile> separateData(std::string& str_inputData);
 		std::vector<ItemRecord> mergeTables (
@@ -171,9 +283,17 @@ Kernel::Kernel(std::string str_target, unsigned long seed) {
 	str_rawData = convert::BytesToHexFS(ifs_rawData);
 	arr_unpackedData = unpackFile(str_rawData);
   
+  std::vector<CharData> Characters = makeCharTables();
+  
   //
   // testing area
   //
+
+  //
+  // NOTE: We don't need to touch tables 0, 1, 9, 10, 16, 17, 18, 24, 25, or 26
+
+  // TODO: include file 2 - Battle & Growth Data
+  // TODO: include file 3 - Initialization Data
   workingTables.push_back(mergeTables(4, 11, 19, ITEMS_STRUCT) );
   workingTables.push_back(mergeTables(5, 12, 20, WEAPON_STRUCT) );
   workingTables.push_back(mergeTables(6, 13, 21, ARMOR_STRUCT) );
@@ -385,5 +505,32 @@ std::vector<ItemRecord> Kernel::mergeTables (
   
 	return itemsMerged;
 } //end mergeTables()
+
+std::vector<CharData> Kernel::makeCharTables() {
+  const unsigned int CHARACTER_COUNT = 9;
+  std::vector<CharData> outputTable;
+  CharData charData;
+  unsigned int itemStart = 0;
+  
+  for(unsigned int i = 0; i < CHARACTER_COUNT; i++) {
+    //
+    // get data from initialization table
+    for(unsigned int j = 0; j < INIT_CHAR_STRUCT.size(); j++) {
+      charData.Data[INIT_CHAR_STRUCT[j].first] = arr_unpackedData[3].content.substr(itemStart,INIT_CHAR_STRUCT[j].second);
+      itemStart += INIT_CHAR_STRUCT[j].second;
+    }
+    //
+    // get data from battle and growth table
+    for(unsigned int j = 0; j < INIT_CHAR_STRUCT.size(); j++) {
+      charData.Data[INIT_CHAR_STRUCT[j].first] = arr_unpackedData[3].content.substr(itemStart,INIT_CHAR_STRUCT[j].second);
+      itemStart += INIT_CHAR_STRUCT[j].second;
+    }    
+    //
+    // set CharData name for easier access later
+    charData.Name = fftext::decode(charData.Data["Name"]);
+    outputTable.push_back(charData);
+  }
+  return outputTable;
+}
 
 #endif /* KERNEL_H_ */
