@@ -4,7 +4,8 @@
 #ifndef KERNEL_H_
 #define KERNEL_H_
 
-// std libs
+//
+// std namespace libs
 #include <iostream>		  // std::cout
 #include <fstream>		  // std::fstream, std::ifstream, std::ofstream
 #include <iomanip>		
@@ -16,8 +17,35 @@
 #include <algorithm>    // std::shuffle
 #include <random>
 #include <ctime>        // std::time
+#include <map>
+//
 // custom libs
+#include <fftext.h>     // fftext namespace
 #include <utility.h>    // data conversion and structuring
+
+struct ItemRecord {
+	std::map<std::string, std::string> Data;
+	std::string Name;
+	std::string Desc;
+};
+
+struct ItemData {
+	std::string content;
+	std::string name;
+	std::string desc;
+};
+
+struct CharData {
+  std::string Name;
+  std::map<std::string, std::string> Data;
+};
+
+struct DataFile {
+	int cmpSize;
+	int rawSize;
+	int index;
+	std::string content;
+};
 
 class Kernel {
 	public:
