@@ -236,8 +236,8 @@ static void dumpFilesystem(
 
 	_cdio_list_free(entries, true);
 }
-//
 // end dumpFilesystem()
+//
 
 // Dump image to system area data, catalog file, and output directory.
 static void dumpImage(
