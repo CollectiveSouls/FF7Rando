@@ -3,7 +3,7 @@
 
 //
 // psx-imager for working with psx disc isos directly
-// #include <psximager/psxbuild.h>
+#include <psximager/psxbuild.h>
 #include <psximager/psxrip.h>
 
 //
