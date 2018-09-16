@@ -4,8 +4,7 @@
 //
 // psx-imager for working with psx disc isos directly
 // #include <psximager/psxbuild.h>
-// #include <psximager/psxinject.h>
-// #include <psximager/psxrip.h>
+#include <psximager/psxrip.h>
 
 //
 // custom libs
@@ -16,8 +15,10 @@
 #include <yamada.h>
 
 int main(int argc, char **argv) {
-	// TODO: Get psximager integrated.
-
+	//
+  // TODO: Get psximager integrated.
+  // psxrip(target);
+  
   //
   // TODO: connect & create seed concurrency with GUI
   unsigned long seed = 4294967295;
