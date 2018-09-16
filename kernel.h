@@ -58,7 +58,7 @@ class Kernel {
 		void present(std::string str_target);
 	private:
     // Kernel::variables
-		std::string str_target;
+		std::string target;
 		std::string str_rawData;
 		std::vector<DataFile> arr_unpackedData;
     const std::vector<std::pair<std::string, unsigned int> > COMMAND_STRUCT {
@@ -313,14 +313,14 @@ class Kernel {
     void printTable(std::vector<ItemRecord> itemsMerged);
 }; // end class Kernel
 
-Kernel::Kernel(std::string str_target, unsigned long seed) {
+Kernel::Kernel(std::string target, unsigned long seed) {
 	//
   // self-test
-	present(str_target);
+	present(target);
 	
   //
 	// Unpack and decompress data files
-	std::ifstream ifs_rawData(str_target, std::ios::binary);
+	std::ifstream ifs_rawData(target, std::ios::binary);
 	str_rawData = convert::BytesToHexFS(ifs_rawData);
 	arr_unpackedData = unpackFile(str_rawData);
   
