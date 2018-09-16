@@ -67,7 +67,7 @@ static void dumpSystemArea(
   CdIo_t * image, 
   const boost::filesystem::path & fileName
 ) {
-	std::ofstream file(fileName, std::ios::out | std::ios::binary | std::ios::trunc);
+	std::ofstream file(fileName.string(), std::ios::out | std::ios::binary | std::ios::trunc);
 	if (!file) {
 		throw std::runtime_error((boost::format("Cannot create system area file %1%\n") % fileName).str());
 	}
@@ -197,7 +197,7 @@ static void dumpFilesystem(
 
 			// Dump the file contents
 			boost::filesystem::path outputFileName = outputDirName / entryName;
-			std::ofstream file(outputFileName.c_str(), std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
+			std::ofstream file(outputFileName.string(), std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
 			if (!file) {
 				throw std::runtime_error((boost::format("Cannot create output file %1%") % outputFileName).str());
 			}
@@ -260,7 +260,7 @@ static void dumpImage(
 	systemAreaName.replace_extension(".sys");
 
 	// Create output catalog file
-	std::ofstream catalog(catalogName.c_str(), std::ofstream::out | std::ofstream::trunc);
+	std::ofstream catalog(catalogName.string(), std::ofstream::out | std::ofstream::trunc);
 	if (!catalog) {
 		throw std::runtime_error((boost::format("Cannot create catalog file %1%") % catalogName).str());
 	}
@@ -327,7 +327,7 @@ void psxrip(
 			inputPath.replace_extension(".bin");
 		}
 
-		CdIo_t * image = cdio_open(inputPath.c_str(), DRIVER_BINCUE);
+		CdIo_t * image = cdio_open(inputPath.string(), DRIVER_BINCUE);
 		
     if (image == NULL) {
 			throw std::runtime_error((boost::format("Error opening input image %1%, or image has wrong type") % inputPath).str());
