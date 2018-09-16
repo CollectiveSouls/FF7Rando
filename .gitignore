@@ -80,8 +80,5 @@ bin/!imgs-unpacked/NTSC/DISC1/BATTLE/SCENE.BIN
 bin/!imgs-unpacked/NTSC/DISC1/BATTLE/CO.BIN
 bin/!imgs-unpacked/NTSC/DISC1/BATTLE/TITLE.BIN
 bin/!imgs-unpacked/NTSC/DISC1/SCUS_941.63
-psximager/psxrip.h
 psximager/psxinject.h
-psximager/psxbuild.h
-psximager/psxbuild.h
 *.project
