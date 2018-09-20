@@ -941,9 +941,6 @@ int psxbuild (
 	boost::filesystem::path outputPath;
 	bool writeCueFile = true;
 
-	for (int i = 1; i < argc; ++i) {
-		string arg = argv[i];
-
 	if (outputPath.empty()) {
 		outputPath = inputPath;
 		outputPath.replace_extension("");
