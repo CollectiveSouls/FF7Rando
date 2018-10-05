@@ -1,18 +1,16 @@
-// std libs
-// N/A
+//
+//
+// custom libs
+#include "kernel.h"
+#include "scene.h"
+#include "window.h"
+#include "field.h"
+#include "yamada.h"
 
 //
 // psx-imager for working with psx disc isos directly
-#include <psximager/psxbuild.h>
-#include <psximager/psxrip.h>
-
-//
-// custom libs
-#include <kernel.h>
-#include <scene.h>
-#include <window.h>
-#include <field.h>
-#include <yamada.h>
+#include "psximager/psxbuild.h"
+#include "psximager/psxrip.h"
 
 int main(int argc, char **argv) {
 	//

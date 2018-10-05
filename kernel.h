@@ -21,9 +21,9 @@
 
 //
 // custom libs
-#include <fftext.h>         // fftext namespace
-#include <gzip.h>           // gzip namespace
-#include <conversions.h>    // data conversion and structuring
+#include "fftext.h"         // fftext namespace
+#include "gzip.h"           // gzip namespace
+#include "conversions.h"    // data conversion and structuring
 
 struct DataFile {
 	int cmpSize;

@@ -18,27 +18,6 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //
 
-#include <stdint.h>
-
-#include <cdio/cdio.h>
-#include <cdio/iso9660.h>
-#include <cdio/bytesex.h>
-
-extern "C" {
-#include <libvcd/sector.h>
-}
-
-#include <string.h>
-#include <time.h>
-
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/regex.hpp>
-#include <boost/scoped_array.hpp>
-using boost::format;
-
 #include <algorithm>
 #include <exception>
 #include <fstream>
@@ -48,6 +27,25 @@ using boost::format;
 #include <vector>
 using namespace std;
 
+#include "stdint.h"
+#include "time.h"
+#include "string.h"
+
+#include "cdio/cdio.h"
+#include "cdio/iso9660.h"
+#include "cdio/bytesex.h"
+
+extern "C" {
+#include "libvcd/sector.h"
+}
+
+#include "boost/algorithm/string/trim.hpp"
+#include "boost/filesystem.hpp"
+#include "boost/format.hpp"
+#include "boost/lexical_cast.hpp"
+#include "boost/regex.hpp"
+#include "boost/scoped_array.hpp"
+using boost::format;
 
 #define TOOL_VERSION "PSXBuild 2.0"
 
