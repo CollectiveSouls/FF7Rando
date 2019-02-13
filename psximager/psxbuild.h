@@ -18,27 +18,6 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //
 
-#include <stdint.h>
-
-#include <cdio/cdio.h>
-#include <cdio/iso9660.h>
-#include <cdio/bytesex.h>
-
-extern "C" {
-#include <libvcd/sector.h>
-}
-
-#include <string.h>
-#include <time.h>
-
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/regex.hpp>
-#include <boost/scoped_array.hpp>
-using boost::format;
-
 #include <algorithm>
 #include <exception>
 #include <fstream>
@@ -48,6 +27,25 @@ using boost::format;
 #include <vector>
 using namespace std;
 
+#include "stdint.h"
+#include "time.h"
+#include "string.h"
+
+#include "cdio/cdio.h"
+#include "cdio/iso9660.h"
+#include "cdio/bytesex.h"
+
+extern "C" {
+#include "libvcd/sector.h"
+}
+
+#include "boost/algorithm/string/trim.hpp"
+#include "boost/filesystem.hpp"
+#include "boost/format.hpp"
+#include "boost/lexical_cast.hpp"
+#include "boost/regex.hpp"
+#include "boost/scoped_array.hpp"
+using boost::format;
 
 #define TOOL_VERSION "PSXBuild 2.0"
 
@@ -793,22 +791,26 @@ private:
 // assigning the "recordNumber" field of all directory nodes
 class PathTables : public Visitor {
 public:
-	PathTables()
-	{
+	PathTables() {
 		iso9660_pathtable_init(lTable);
 		iso9660_pathtable_init(mTable);
 	}
 
-	void visit(DirNode & dir)
-	{
+	void visit(DirNode & dir) {
 		uint16_t parentRecord = dir.parent ? dir.parent->recordNumber : 1;
 		dir.recordNumber = iso9660_pathtable_l_add_entry(lTable, dir.name.c_str(), dir.firstSector, parentRecord);
 		dir.recordNumber = iso9660_pathtable_m_add_entry(mTable, dir.name.c_str(), dir.firstSector, parentRecord);
 	}
 
-	size_t size() const { return iso9660_pathtable_get_size( lTable ); }
-	const void * getLTable() const { return lTable; }
-	const void * getMTable() const { return mTable; }
+	size_t size() const { 
+    return iso9660_pathtable_get_size( lTable ); 
+  }
+	const void * getLTable() const { 
+    return lTable;
+  }
+	const void * getMTable() const { 
+    return mTable;
+  }
 
 private:
 	uint8_t lTable[ISO_BLOCKSIZE];  // LSB-first table
@@ -821,8 +823,7 @@ class WriteData : public Visitor {
 public:
 	WriteData(ofstream & image_, uint32_t startSector_) : image(image_), currentSector(startSector_) { }
 
-	void visit(FileNode & file)
-	{
+	void visit(FileNode & file)	{
 		ifstream f(file.path.c_str(), ifstream::in | ifstream::binary);
 		if (!f) {
 			throw runtime_error((format("Cannot open file %1%") % file.path).str());
@@ -856,8 +857,7 @@ public:
 		}
 	}
 
-	void visit(DirNode & dir)
-	{
+	void visit(DirNode & dir)	{
 		writeGap(dir.firstSector);
 
 		for (uint32_t sector = 0; sector < dir.numSectors; ++sector) {
@@ -874,8 +874,7 @@ public:
 	}
 
 	// Write empty sectors as a gap until we reach the specified sector.
-	void writeGap(uint32_t until)
-	{
+	void writeGap(uint32_t until) {
 		while (currentSector < until) {
 			_vcd_make_mode2(buffer, emptySector, currentSector, 0, 0, SM_FORM2, 0);
 			image.write(buffer, CDIO_CD_FRAMESIZE_RAW);
@@ -883,7 +882,6 @@ public:
 			++currentSector;
 		}
 	}
-
 private:
 	ofstream & image;
 	uint32_t currentSector;
@@ -892,8 +890,7 @@ private:
 
 // Write the system area to the image file, optionally using the file
 // specified in the catalog as input.
-static void writeSystemArea(ofstream & image, const Catalog & cat)
-{
+static void writeSystemArea(ofstream & image, const Catalog & cat) {
 	const size_t numSystemSectors = 16;
 	const size_t systemAreaSize = numSystemSectors * CDIO_CD_FRAMESIZE;
 
@@ -934,62 +931,13 @@ static void writeSystemArea(ofstream & image, const Catalog & cat)
 	}
 }
 
-
-// Print usage information and exit.
-static void usage(const char * progname, int exitcode = 0, const string & error = "")
-{
-	cout << "Usage: " << boost::filesystem::path(progname).filename().native() << " [OPTION...] <input>[.cat] [<output>[.bin]]" << endl;
-    cout << "  -c, --cuefile                   Create a .cue file" << endl;
-	cout << "  -v, --verbose                   Be verbose" << endl;
-	cout << "  -V, --version                   Display version information and exit" << endl;
-	cout << "  -?, --help                      Show this help message" << endl;
-
-	if (!error.empty()) {
-		cerr << endl << "Error: " << error << endl;
-	}
-
-	exit(exitcode);
-}
-
-
 // Main program
-int main(int argc, char ** argv)
-{
+int psxbuild (
 	// Parse command line arguments
-	boost::filesystem::path inputPath;
+	boost::filesystem::path inputPath
+) {
 	boost::filesystem::path outputPath;
-	bool verbose = false;
-	bool writeCueFile = false;
-
-	for (int i = 1; i < argc; ++i) {
-		string arg = argv[i];
-
-		if (arg == "--version" || arg == "-V") {
-			cout << TOOL_VERSION << endl;
-			return 0;
-		} else if (arg == "--cuefile" || arg == "-c") {
-			writeCueFile = true;
-		} else if (arg == "--verbose" || arg == "-v") {
-			cdio_loglevel_default = CDIO_LOG_INFO;
-			verbose = true;
-		} else if (arg == "--help" || arg == "-?") {
-			usage(argv[0]);
-		} else if (arg[0] == '-') {
-			usage(argv[0], 64, "Invalid option '" + arg + "'");
-		} else {
-			if (inputPath.empty()) {
-				inputPath = arg;
-			} else if (outputPath.empty()) {
-				outputPath = arg;
-			} else {
-				usage(argv[0], 64, "Unexpected extra argument '" + arg + "'");
-			}
-		}
-	}
-
-	if (inputPath.empty()) {
-		usage(argv[0], 64, "No input catalog file specified");
-	}
+	bool writeCueFile = true;
 
 	if (outputPath.empty()) {
 		outputPath = inputPath;
@@ -997,7 +945,6 @@ int main(int argc, char ** argv)
 	}
 
 	try {
-
 		// Read and parse the catalog file
 		boost::filesystem::path catalogName = inputPath;
 		if (catalogName.extension().empty()) {

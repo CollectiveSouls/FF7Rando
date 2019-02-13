@@ -1,0 +1,564 @@
+This file is meant to be documentation of how each data table contained in the kernel file will be structured after being unpacked.
+
+-----------------------------------------------------------------
+								| Bytes		| MinVal	| MaxVal
+-----------------------------------------------------------------
+Table 0 - Command Data
+-----------------------------------------------------------------
+	.InitialCursorAction		| 1
+	.TargetingFlag				| 1
+	.Unknown1					| 2
+	.CameraIdSingleTarget		| 2
+	.CameraIdMultiTarget		| 2
+
+-----------------------------------------------------------------
+Table 1 - Attack Data
+-----------------------------------------------------------------
+	.AtkPercent					| 1
+	.ImpactEffectId				| 1
+	.TargetHurtActionId			| 1
+	.Unknown1					| 1
+	.MPCost						| 2
+	.ImpactSoundId				| 2
+	.CameraIdSingleTarget		| 2
+	.CameraIdMultiTarget		| 2
+	.TargetingFlag				| 1
+	.AttackEffectId				| 1
+	.DamageCalculation			| 1
+	.PowerForDamageCalculation	| 1
+	.RestoreType				| 1
+	.StatusEffectChange			| 1
+	.AdditionalAttackEffects	| 1
+	.AdditionalEffectsModifier	| 1
+	.StatusEffectMask			| 4
+	.ElementMask				| 2
+	.SpecialAttackFlags			| 2
+
+-----------------------------------------------------------------
+Table 2 - Battle & Growth Data [Variable Sizes]
+-----------------------------------------------------------------
+	.CloudData					| 56
+		.StrLevelUpCurve		| 1
+		.VitLevelUpCurve		| 1
+		.MagLevelUpCurve		| 1
+		.SprLevelUpCurve		| 1
+		.DexLevelUpCurve		| 1
+		.LukLevelUpCurve		| 1
+		.HPLevelUpCurve			| 1
+		.MPLevelUpCurve			| 1
+		.ExpLevelUpCurve		| 1
+		.Padding1				| 1
+		.StartingLevel			| 1
+		.Padding2				| 1
+		.LimitCommandId1_1		| 1
+		.LimitCommandId1_2		| 1
+		.LimitCommandId1_3		| 1
+		.LimitCommandId2_1		| 1
+		.LimitCommandId2_2		| 1
+		.LimitCommandId2_3		| 1
+		.LimitCommandId3_1		| 1
+		.LimitCommandId3_2		| 1
+		.LimitCommandId3_3		| 1
+		.LimitCommandId4_1		| 1
+		.LimitCommandId4_2		| 1
+		.LimitCommandId4_3		| 1
+		.KillsToLimitLvl2		| 2
+		.KillsToLimitLvl3		| 2
+		.ReqUsesForLimit1_2		| 2
+		.ReqUsesForLimit1_3		| 2
+		.ReqUsesForLimit2_2		| 2
+		.ReqUsesForLimit2_3		| 2
+		.ReqUsesForLimit3_2		| 2
+		.ReqUsesForLimit3_3		| 2
+		.HPDivisorLimitLvl1		| 4
+		.HPDivisorLimitLvl2		| 4
+		.HPDivisorLimitLvl3		| 4
+		.HPDivisorLimitLvl4		| 4
+	.BarretData					| 56
+		// see Cloud section breakdown
+	.TifaData					| 56
+		// see Cloud section breakdown
+	.AerisData					| 56
+		// see Cloud section breakdown
+	.NanakiData					| 56
+		// see Cloud section breakdown
+	.YuffieData					| 56
+		// see Cloud section breakdown
+	.CaitSithData				| 56
+		// see Cloud section breakdown
+	.VincentData				| 56
+		// see Cloud section breakdown
+	.CidData					| 56
+		// see Cloud section breakdown
+	.RandBonusToPrimaryStats	| 12
+	.RandBonusToHP				| 12
+	.RandBonusToMP				| 12
+	.PrimaryStatCurves			| 37*16 (6 stats, 9 characters, 16 pts)
+	.HPStatCurve				| 9*16
+	.MPStatCurve				| 9*16
+	.ExpStatCurve				| 9*16
+	.CharAIData					| 1508
+	.Padding					| 540
+	.RandNumLookupTable			| 256		| 0x00		| 0xFF
+	.SceneLookupTable			| 64
+	.SpellOrderForMagicMenu		| 56
+
+-----------------------------------------------------------------
+Table 3 - Initialization Data (Savemap Init)
+-----------------------------------------------------------------
+	.CharRecordCloud			| 132
+		.CharacterIdFlag		| 1
+		.Level					| 1			| 0x00		| 0x63
+		.Strength				| 1			| 0x00		| 0xFF
+		.Vitality				| 1			| 0x00		| 0xFF
+		.Magic					| 1			| 0x00		| 0xFF
+		.Spirit					| 1			| 0x00		| 0xFF
+		.Dexterity				| 1			| 0x00		| 0xFF
+		.Luck					| 1			| 0x00		| 0xFF
+		.PowerSourcesUsed		| 1			| 0x00		| 0xFF
+		.GuardSourcesUsed		| 1			| 0x00		| 0xFF
+		.MagicSourcesUsed		| 1			| 0x00		| 0xFF
+		.MindSourcesUsed		| 1			| 0x00		| 0xFF
+		.SpeedSourcesUsed		| 1			| 0x00		| 0xFF
+		.LuckSourcesUsed		| 1			| 0x00		| 0xFF
+		.CurrentLimitLvl		| 1			| 0x01		| 0x04
+		.CurrentLimitBar		| 1			| 0x00		| 0xFF
+		.Name					| 12		| FFText Format
+		.EquippedWeaponId		| 1			| 
+		.EquippedArmorId		| 1			| 
+		.EquippedAccessoryId	| 1			| 
+		.StatusFlag				| 1			| 			| 
+		.RowFlag				| 1			| 
+		.LvlProgressBar			| 1			| 0x00		| 0x63
+		.LearnedLimitSkills		| 2			|			| 
+		.NumberOfKills			| 2			| 0x0000	| 0xFFFF
+		.TimesLimit1_1Used		| 2			| 0x0000	| 0xFFFF
+		.TimesLimit2_1Used		| 2			| 0x0000	| 0xFFFF
+		.TimesLimit3_1Used		| 2			| 0x0000	| 0xFFFF
+		.CurrentHP				| 2			| 0x0000	| 0xFFFF
+		.BaseHP					| 2			| 0x0000	| 0xFFFF
+		.CurrentMP				| 2			| 0x0000	| 0xFFFF
+		.BaseMP					| 2			| 0x0000	| 0xFFFF
+		.Unknown1				| 4			| 
+		.MaxHP					| 2			| 0x0000	| 0xFFFF
+		.MaxMP					| 2			| 0x0000	| 0xFFFF
+		.CurrentExp				| 4			| 0x0000..	| 0xFFFF..
+		.WeaponMateriaSlot1		| 4			| 
+		.WeaponMateriaSlot2		| 4			| 
+		.WeaponMateriaSlot3		| 4			| 
+		.WeaponMateriaSlot4		| 4			| 
+		.WeaponMateriaSlot5		| 4			| 
+		.WeaponMateriaSlot6		| 4			| 
+		.WeaponMateriaSlot7		| 4			| 
+		.WeaponMateriaSlot8		| 4			| 
+		.ArmorMateriaSlot1		| 4			| 
+		.ArmorMateriaSlot2		| 4			| 
+		.ArmorMateriaSlot3		| 4			| 
+		.ArmorMateriaSlot4		| 4			| 
+		.ArmorMateriaSlot5		| 4			| 
+		.ArmorMateriaSlot6		| 4			| 
+		.ArmorMateriaSlot7		| 4			| 
+		.ArmorMateriaSlot8		| 4			| 
+		.ExpToLevel				| 4			| 0x0000..	| 0xFFFF..
+	.CharRecordBarret			| 132
+		// see Cloud section breakdown
+	.CharRecordTifa				| 132
+		// see Cloud section breakdown
+	.CharRecordAeris			| 132
+		// see Cloud section breakdown
+	.CharRecordNanaki			| 132
+		// see Cloud section breakdown
+	.CharRecordYuffie			| 132
+		// see Cloud section breakdown
+	.CharRecordCaitSith			| 132
+		// see Cloud section breakdown
+	.CharRecordVincent			| 132
+		// see Cloud section breakdown
+	.CharRecordCid				| 132
+		// see Cloud section breakdown
+	.CharIdPartyMemeberSlot1	| 1
+	.CharIdPartyMemeberSlot2	| 1
+	.CharIdPartyMemeberSlot3	| 1
+	.Padding1					| 1
+	.PartyItemStock				| 640 (2*320)
+	.PartyMarteriaStock			| 800 (4*200)
+	.MateriaSolenByYuffie		| 192 (4*48)
+
+-----------------------------------------------------------------
+Table 4 - Item Data
+-----------------------------------------------------------------
+	.Unknown1					| 8
+	.CameraMovementId			| 2
+	.MenuRestriction			| 2
+	.TargetingFlag				| 1
+	.AttackEffectId				| 1
+	.DamageCalculation			| 1
+	.PowerForDamageCalculation	| 1
+	.ConditionSubmenu			| 1
+	.StatusEffectChange			| 1
+	.AdditionalEffectsModifier	| 1
+	.StatusEffectMask			| 4
+	.ElementMask				| 2
+	.SpecialAttackFlags			| 2
+
+-----------------------------------------------------------------
+Table 5 - Weapon Data
+-----------------------------------------------------------------
+	.TargetingFlag
+	.AttackEffectId
+	.DamageCalculation
+	.Unknown1
+	.PowerForDamageCalculation
+	.StatusAttack
+	.MateriaGrowthModifier
+	.CriticalHitPercent
+	.WeaponHitPercent
+	.WeaponModelId
+	.ModelAlignment
+	.HighSoundId
+	.CameraMovementId
+	.CharacterMask
+	.ElementMask
+	.Unknown2
+	.StatId1
+	.StatId2
+	.StatId3
+	.StatId4
+	.IncreaseStat1
+	.IncreaseStat2
+	.IncreaseStat3
+	.IncreaseStat4
+	.MateriaSlot1
+	.MateriaSlot2
+	.MateriaSlot3
+	.MateriaSlot4
+	.MateriaSlot5
+	.MateriaSlot6
+	.MateriaSlot7
+	.MateriaSlot8
+	.SoundIdHitNormal
+	.SoundIdHitCritical
+	.SoundIdHitMissed
+	.SoundIdImpact
+	.SpecialAttackFlags
+	.MenuRestriction
+
+-----------------------------------------------------------------
+Table 6 - Armors
+-----------------------------------------------------------------
+	.Unknown1
+	.ElementAffinity
+	.Defense
+	.MDefense
+	.DefensePercent
+	.MDefensePercent
+	.StatusDefenseId
+	.Unknown2
+	.MateriaSlot1
+	.MateriaSlot2
+	.MateriaSlot3
+	.MateriaSlot4
+	.MateriaSlot5
+	.MateriaSlot6
+	.MateriaSlot7
+	.MateriaSlot8
+	.MateriaGrowthModifier
+	.CharacterMask
+	.ElementMask
+	.Unknown3
+	.StatId1
+	.StatId2
+	.StatId3
+	.StatId4
+	.Stat1Increase
+	.Stat2Increase
+	.Stat3Increase
+	.Stat4Increase
+	.MenuRestriction
+	.Unknown4
+
+-----------------------------------------------------------------
+Table 7 - Accessory Data
+-----------------------------------------------------------------
+	.StatId1
+	.StatId2
+	.Stat1Increase
+	.Stat2Increase
+	.ElementAffinity
+	.SpecialEffect
+	.ElementMask
+	.StatusMask
+	.CharacterMask
+	.MenuRestriction
+
+-----------------------------------------------------------------
+Table 8 - Materia Data
+-----------------------------------------------------------------
+	.APReq1
+	.APReq2
+	.APReq3
+	.APReq4
+	.EffectValue
+	.StatusMask
+	.ElementID
+	.MateriaType
+	.StrModifier
+	.VitModifier
+	.MagModifier
+	.SprModifier
+	.DexModifier
+	.LukModifier
+
+=================================================================
+Derived Character Table
+=================================================================
+.Charname
+	.CharacterIdFlag		| 1
+		// this handles swapping Cait Sith with Young Cloud and Vincent with Sephiroth
+	.Level					| 1			| 0x00		| 0x63
+	.Strength				| 1			| 0x00		| 0xFF
+	.Vitality				| 1			| 0x00		| 0xFF
+	.Magic					| 1			| 0x00		| 0xFF
+	.Spirit					| 1			| 0x00		| 0xFF
+	.Dexterity				| 1			| 0x00		| 0xFF
+	.Luck					| 1			| 0x00		| 0xFF
+	.PowerSourcesUsed		| 1			| 0x00		| 0xFF
+	.GuardSourcesUsed		| 1			| 0x00		| 0xFF
+	.MagicSourcesUsed		| 1			| 0x00		| 0xFF
+	.MindSourcesUsed		| 1			| 0x00		| 0xFF
+	.SpeedSourcesUsed		| 1			| 0x00		| 0xFF
+	.LuckSourcesUsed		| 1			| 0x00		| 0xFF
+	.CurrentLimitLvl		| 1			| 0x01		| 0x04
+	.CurrentLimitBar		| 1			| 0x00		| 0xFF
+	.Name					| 12		| FFText Format
+	.EquippedWeaponId		| 1			| 
+	.EquippedArmorId		| 1			| 
+	.EquippedAccessoryId	| 1			| 
+	.CharacterFlags			| 1			| 			| 
+	.CharRowFlag			| 1			| 
+	.LevelProgressBar		| 1			| 0x00		| 0x63
+	.LearnedLimitSkills		| 2			|			| 
+	.NumberOfKills			| 2			| 0x0000	| 0xFFFF
+	.TimesLimit1_1Used		| 2			| 0x0000	| 0xFFFF
+	.TimesLimit2_1Used		| 2			| 0x0000	| 0xFFFF
+	.TimesLimit3_1Used		| 2			| 0x0000	| 0xFFFF
+	.CurrentHP				| 2			| 0x0000	| 0xFFFF
+	.BaseHP					| 2			| 0x0000	| 0xFFFF
+	.CurrentMP				| 2			| 0x0000	| 0xFFFF
+	.BaseMP					| 2			| 0x0000	| 0xFFFF
+	.Unknown1				| 4			| 
+	.MaxHP					| 2			| 0x0000	| 0xFFFF
+	.MaxMP					| 2			| 0x0000	| 0xFFFF
+	.CurrentExp				| 4			| 0x0000..	| 0xFFFF..
+	.WeaponMateriaSlot1		| 4			| 
+	.WeaponMateriaSlot2		| 4			| 
+	.WeaponMateriaSlot3		| 4			| 
+	.WeaponMateriaSlot4		| 4			| 
+	.WeaponMateriaSlot5		| 4			| 
+	.WeaponMateriaSlot6		| 4			| 
+	.WeaponMateriaSlot7		| 4			| 
+	.WeaponMateriaSlot8		| 4			| 
+	.ArmorMateriaSlot1		| 4			| 
+	.ArmorMateriaSlot2		| 4			| 
+	.ArmorMateriaSlot3		| 4			| 
+	.ArmorMateriaSlot4		| 4			| 
+	.ArmorMateriaSlot5		| 4			| 
+	.ArmorMateriaSlot6		| 4			| 
+	.ArmorMateriaSlot7		| 4			| 
+	.ArmorMateriaSlot8		| 4			| 
+	.ExpToNextLevel			| 4			| 0x0000..	| 0xFFFF..
+	/////
+	-----> splits to level & curve data
+	/////
+	.StrLvlUpCurve			| 1
+	.VitLvlUpCurve			| 1
+	.MagLvlUpCurve			| 1
+	.SprLvlUpCurve			| 1
+	.DexLvlUpCurve			| 1
+	.LukLvlUpCurve			| 1
+	.HPLvlUpCurve			| 1
+	.MPLvlUpCurve			| 1
+	.ExpLvlUpCurve			| 1
+	.Padding1				| 1
+	.StartingLevel			| 1
+	.Padding2				| 1
+	.LimitCommandId1_1		| 1
+	.LimitCommandId1_2		| 1
+	.LimitCommandId1_3		| 1
+	.LimitCommandId2_1		| 1
+	.LimitCommandId2_2		| 1
+	.LimitCommandId2_3		| 1
+	.LimitCommandId3_1		| 1
+	.LimitCommandId3_2		| 1
+	.LimitCommandId3_3		| 1
+	.LimitCommandId4_1		| 1
+	.LimitCommandId4_2		| 1
+	.LimitCommandId4_3		| 1
+	.KillsToLimitLvl2		| 2
+	.KillsToLimitLvl3		| 2
+	.ReqUsesForLimit1_2		| 2
+	.ReqUsesForLimit1_3		| 2
+	.ReqUsesForLimit2_2		| 2
+	.ReqUsesForLimit2_3		| 2
+	.ReqUsesForLimit3_2		| 2
+	.ReqUsesForLimit3_3		| 2
+	.HPDivisorLimitLvl1		| 4
+	.HPDivisorLimitLvl2		| 4
+	.HPDivisorLimitLvl3		| 4
+	.HPDivisorLimitLvl4		| 4
+	----> splits @ it == 36 (skips 36 bytes)
+	.StrStatCurve1			| 1		// lvl 2-11
+	.StrStatCurve2			| 1		// lvl 2-11
+	.StrStatCurve3			| 1		// lvl 12-21
+	.StrStatCurve4			| 1		// lvl 12-21
+	.StrStatCurve5			| 1		// lvl 22-31
+	.StrStatCurve6			| 1		// lvl 22-31
+	.StrStatCurve7			| 1		// lvl 32-41
+	.StrStatCurve8			| 1		// lvl 32-41
+	.StrStatCurve9			| 1		// lvl 42-51
+	.StrStatCurve10			| 1		// lvl 42-51
+	.StrStatCurve11			| 1		// lvl 52-61
+	.StrStatCurve12			| 1		// lvl 52-61
+	.StrStatCurve13			| 1		// lvl 62-81
+	.StrStatCurve14			| 1		// lvl 62-81
+	.StrStatCurve15			| 1		// lvl 82-99
+	.StrStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 52 (skips )
+	.VitStatCurve1			| 1		// lvl 2-11
+	.VitStatCurve2			| 1		// lvl 2-11
+	.VitStatCurve3			| 1		// lvl 12-21
+	.VitStatCurve4			| 1		// lvl 12-21
+	.VitStatCurve5			| 1		// lvl 22-31
+	.VitStatCurve6			| 1		// lvl 22-31
+	.VitStatCurve7			| 1		// lvl 32-41
+	.VitStatCurve8			| 1		// lvl 32-41
+	.VitStatCurve9			| 1		// lvl 42-51
+	.VitStatCurve10			| 1		// lvl 42-51
+	.VitStatCurve11			| 1		// lvl 52-61
+	.VitStatCurve12			| 1		// lvl 52-61
+	.VitStatCurve13			| 1		// lvl 62-81
+	.VitStatCurve14			| 1		// lvl 62-81
+	.VitStatCurve15			| 1		// lvl 82-99
+	.VitStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 68
+	.MagStatCurve1			| 1		// lvl 2-11
+	.MagStatCurve2			| 1		// lvl 2-11
+	.MagStatCurve3			| 1		// lvl 12-21
+	.MagStatCurve4			| 1		// lvl 12-21
+	.MagStatCurve5			| 1		// lvl 22-31
+	.MagStatCurve6			| 1		// lvl 22-31
+	.MagStatCurve7			| 1		// lvl 32-41
+	.MagStatCurve8			| 1		// lvl 32-41
+	.MagStatCurve9			| 1		// lvl 42-51
+	.MagStatCurve10			| 1		// lvl 42-51
+	.MagStatCurve11			| 1		// lvl 52-61
+	.MagStatCurve12			| 1		// lvl 52-61
+	.MagStatCurve13			| 1		// lvl 62-81
+	.MagStatCurve14			| 1		// lvl 62-81
+	.MagStatCurve15			| 1		// lvl 82-99
+	.MagStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 84
+	.SprStatCurve1			| 1		// lvl 2-11
+	.SprStatCurve2			| 1		// lvl 2-11
+	.SprStatCurve3			| 1		// lvl 12-21
+	.SprStatCurve4			| 1		// lvl 12-21
+	.SprStatCurve5			| 1		// lvl 22-31
+	.SprStatCurve6			| 1		// lvl 22-31
+	.SprStatCurve7			| 1		// lvl 32-41
+	.SprStatCurve8			| 1		// lvl 32-41
+	.SprStatCurve9			| 1		// lvl 42-51
+	.SprStatCurve10			| 1		// lvl 42-51
+	.SprStatCurve11			| 1		// lvl 52-61
+	.SprStatCurve12			| 1		// lvl 52-61
+	.SprStatCurve13			| 1		// lvl 62-81
+	.SprStatCurve14			| 1		// lvl 62-81
+	.SprStatCurve15			| 1		// lvl 82-99
+	.SprStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 100
+	.DexStatCurve1			| 1		// lvl 2-11
+	.DexStatCurve2			| 1		// lvl 2-11
+	.DexStatCurve3			| 1		// lvl 12-21
+	.DexStatCurve4			| 1		// lvl 12-21
+	.DexStatCurve5			| 1		// lvl 22-31
+	.DexStatCurve6			| 1		// lvl 22-31
+	.DexStatCurve7			| 1		// lvl 32-41
+	.DexStatCurve8			| 1		// lvl 32-41
+	.DexStatCurve9			| 1		// lvl 42-51
+	.DexStatCurve10			| 1		// lvl 42-51
+	.DexStatCurve11			| 1		// lvl 52-61
+	.DexStatCurve12			| 1		// lvl 52-61
+	.DexStatCurve13			| 1		// lvl 62-81
+	.DexStatCurve14			| 1		// lvl 62-81
+	.DexStatCurve15			| 1		// lvl 82-99
+	.DexStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 116
+	.LukStatCurve1			| 1		// lvl 2-11
+	.LukStatCurve2			| 1		// lvl 2-11
+	.LukStatCurve3			| 1		// lvl 12-21
+	.LukStatCurve4			| 1		// lvl 12-21
+	.LukStatCurve5			| 1		// lvl 22-31
+	.LukStatCurve6			| 1		// lvl 22-31
+	.LukStatCurve7			| 1		// lvl 32-41
+	.LukStatCurve8			| 1		// lvl 32-41
+	.LukStatCurve9			| 1		// lvl 42-51
+	.LukStatCurve10			| 1		// lvl 42-51
+	.LukStatCurve11			| 1		// lvl 52-61
+	.LukStatCurve12			| 1		// lvl 52-61
+	.LukStatCurve13			| 1		// lvl 62-81
+	.LukStatCurve14			| 1		// lvl 62-81
+	.LukStatCurve15			| 1		// lvl 82-99
+	.LukStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 132
+	.HPStatCurve1			| 1		// lvl 2-11
+	.HPStatCurve2			| 1		// lvl 2-11
+	.HPStatCurve3			| 1		// lvl 12-21
+	.HPStatCurve4			| 1		// lvl 12-21
+	.HPStatCurve5			| 1		// lvl 22-31
+	.HPStatCurve6			| 1		// lvl 22-31
+	.HPStatCurve7			| 1		// lvl 32-41
+	.HPStatCurve8			| 1		// lvl 32-41
+	.HPStatCurve9			| 1		// lvl 42-51
+	.HPStatCurve10			| 1		// lvl 42-51
+	.HPStatCurve11			| 1		// lvl 52-61
+	.HPStatCurve12			| 1		// lvl 52-61
+	.HPStatCurve13			| 1		// lvl 62-81
+	.HPStatCurve14			| 1		// lvl 62-81
+	.HPStatCurve15			| 1		// lvl 82-99
+	.HPStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 148
+	.MPStatCurve1			| 1		// lvl 2-11
+	.MPStatCurve2			| 1		// lvl 2-11
+	.MPStatCurve3			| 1		// lvl 12-21
+	.MPStatCurve4			| 1		// lvl 12-21
+	.MPStatCurve5			| 1		// lvl 22-31
+	.MPStatCurve6			| 1		// lvl 22-31
+	.MPStatCurve7			| 1		// lvl 32-41
+	.MPStatCurve8			| 1		// lvl 32-41
+	.MPStatCurve9			| 1		// lvl 42-51
+	.MPStatCurve10			| 1		// lvl 42-51
+	.MPStatCurve11			| 1		// lvl 52-61
+	.MPStatCurve12			| 1		// lvl 52-61
+	.MPStatCurve13			| 1		// lvl 62-81
+	.MPStatCurve14			| 1		// lvl 62-81
+	.MPStatCurve15			| 1		// lvl 82-99
+	.MPStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 164
+	.ExpStatCurve1			| 1		// lvl 2-11
+	.ExpStatCurve2			| 1		// lvl 2-11
+	.ExpStatCurve3			| 1		// lvl 12-21
+	.ExpStatCurve4			| 1		// lvl 12-21
+	.ExpStatCurve5			| 1		// lvl 22-31
+	.ExpStatCurve6			| 1		// lvl 22-31
+	.ExpStatCurve7			| 1		// lvl 32-41
+	.ExpStatCurve8			| 1		// lvl 32-41
+	.ExpStatCurve9			| 1		// lvl 42-51
+	.ExpStatCurve10			| 1		// lvl 42-51
+	.ExpStatCurve11			| 1		// lvl 52-61
+	.ExpStatCurve12			| 1		// lvl 52-61
+	.ExpStatCurve13			| 1		// lvl 62-81
+	.ExpStatCurve14			| 1		// lvl 62-81
+	.ExpStatCurve15			| 1		// lvl 82-99
+	.ExpStatCurve16			| 1		// lvl 82-99
+	----> splits @ it == 180
+	.CharAIData				| Varies
+		// header for section contains offset and size

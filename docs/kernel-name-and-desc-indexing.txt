@@ -1,0 +1,48 @@
+Decriptions start at an index and run until the next specified index or end of file. (NOTE: The -deflated- size is used, expressed as a little-endian value, not the inflated size.)
+
+Descriptions themselves are applied to the appropriate item by order they appear in both the data file and index of the 2-byte dindex in the description file. Which means there's one index per item in the appropriate table of the initial 9 tables within kernel.
+
+
+Here's an example of the indexing for the Weapon Descriptions table and the values which they point to, with names for clarity.
+--------------------------------------------
+00 01 		// Buster Sword - Initial equiping
+10 01 		// Mythril Saber
+10 01 		// Hardedge
+10 01 		// Butterfly Edge
+10 01 		// Enhance Sword
+10 01 		// Organics
+10 01 		// Crystal Sword
+10 01 		// Force Stealer
+10 01 		// Rune Blade
+10 01 		// Marasame
+10 01 		// Nail Bat
+11 01		// Yoshiyuki - 3WORD.IS.USED.WHEN.AN.ALLYù.DOWN
+31 01		// Apocalypse
+31 01 		// Heaven's Cloud
+31 01 		// Ragnarok
+31 01 		// Ultima Weapon
+31 01 		// Leather Glove
+31 01 		// Metal Knuckle
+31 01 		// Mythril Claw
+31 01 		// Grand Glove
+31 01 		// Tiger Fang
+31 01 		// Diamond Knuckle
+31 01 		// Dragon Claw
+31 01 		// Crystal Glove
+31 01 		// Motor Drive
+31 01 		// Platinum Fist
+31 01 		// Kaiser Knuckle
+31 01 		// Work Glove
+32 01 		// Powersoul - 0OWER.UPù[;.EAR.DEATH=ÿ
+49 01 		// Master Fist - ù–ùlCONDITION.CHANGES
+5E 01 		// God's Hand
+5E 01 		// Premium Heart
+5F 01 		// Gatling Gun - )NITIAL.EQUIP..,ONG.Rù..WEAPON
+7E 01 		// Assault Weapon - ùOù&ù‹
+84 01 		// Cannon Ball
+84 01 		// Atomic Scissors
+85 01 		// Heavy Vulcan - ùVù-ù’
+8B 01 		// Chainsaw
+8C 01 		// Microlaser - ù]ù4ù™
+93 01 		// AM Cannon - ùdù;ù 
+9A 01 		// etc... etc... etc...

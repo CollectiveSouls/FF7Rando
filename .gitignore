@@ -70,3 +70,15 @@ Thumbs.db
 *.exe
 *.out
 *.app
+*.LZS
+bin/!imgs-unpacked/NTSC/DISC1/SYSTEM.CNF
+ff7rando.mk
+ff7rando.txt
+*.autosave
+*.X
+bin/!imgs-unpacked/NTSC/DISC1/BATTLE/SCENE.BIN
+bin/!imgs-unpacked/NTSC/DISC1/BATTLE/CO.BIN
+bin/!imgs-unpacked/NTSC/DISC1/BATTLE/TITLE.BIN
+bin/!imgs-unpacked/NTSC/DISC1/SCUS_941.63
+psximager/psxinject.h
+*.project
